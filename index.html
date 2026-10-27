@@ -1,0 +1,789 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>F1 26 League · 2026 Season 1</title>
+<meta name="description" content="Win tally for our F1 26 online league, 2026 Season 1.">
+<meta name="theme-color" content="#0c0c0f">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23fff'/%3E%3Crect width='8' height='8' fill='%23000'/%3E%3Crect x='16' width='8' height='8' fill='%23000'/%3E%3Crect x='8' y='8' width='8' height='8' fill='%23000'/%3E%3Crect x='24' y='8' width='8' height='8' fill='%23000'/%3E%3Crect y='16' width='8' height='8' fill='%23000'/%3E%3Crect x='16' y='16' width='8' height='8' fill='%23000'/%3E%3Crect x='8' y='24' width='8' height='8' fill='%23000'/%3E%3Crect x='24' y='24' width='8' height='8' fill='%23000'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,800&family=Titillium+Web:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme:dark;
+  --carbon:#0c0c0f; --panel:#16161b; --panel-2:#1f1f27; --line:#2d2d38;
+  --ink:#f3f3f6; --mute:#9d9dad; --red:#e10600; --purple:#b845e8; --green:#2ee08a;
+  --display:'Barlow Condensed','Arial Narrow',Impact,sans-serif;
+  --body:'Titillium Web',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background-color:var(--carbon);color:var(--ink);font:400 16px/1.5 var(--body);
+  background-image:
+    repeating-linear-gradient(45deg,rgba(255,255,255,.02) 0 2px,transparent 2px 6px),
+    repeating-linear-gradient(-45deg,rgba(255,255,255,.02) 0 2px,transparent 2px 6px);
+  min-height:100vh;
+}
+img{display:block}
+[hidden]{display:none!important}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 16px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ---------- header ---------- */
+.stripe{height:4px;background:var(--red)}
+.checker{height:10px;background:conic-gradient(#fff 25%,#000 0 50%,#fff 0 75%,#000 0) 0 0/20px 20px;opacity:.9}
+.top .bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px 24px;padding-top:18px;padding-bottom:18px}
+.brand h1{margin:0;font:italic 800 clamp(34px,6vw,56px)/.95 var(--display);letter-spacing:.005em}
+.brand p{margin:6px 0 0;color:var(--mute);font-size:14px}
+.actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.live{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--mute);margin-right:6px}
+.live i{width:9px;height:9px;border-radius:50%;background:#555}
+.live.on i{background:var(--green);box-shadow:0 0 0 0 rgba(46,224,138,.6);animation:pulse 2s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 8px rgba(46,224,138,0)}100%{box-shadow:0 0 0 0 rgba(46,224,138,0)}}
+
+.btn{display:inline-flex;align-items:center;gap:8px;min-height:42px;padding:8px 16px;background:var(--panel-2);border:1px solid var(--line);border-radius:4px;cursor:pointer;font-weight:600;transition:background .15s,border-color .15s}
+.btn:hover{background:#2a2a34;border-color:#454554}
+.btn.primary{background:#fff;color:#000;border-color:#fff;font-weight:700}
+.btn.primary:hover{background:#e6e6ea}
+.btn.danger{color:#ff6b63;border-color:#5a2824}
+.btn.danger.armed{background:#ff3b30;color:#fff;border-color:#ff3b30}
+.btn.ghost{background:transparent;border-color:transparent;color:var(--mute);min-height:34px;padding:4px 10px;font-weight:600;font-size:14px}
+.btn.ghost:hover{color:#fff;background:var(--panel-2)}
+.btn[disabled]{opacity:.5;cursor:default}
+
+/* ---------- sections ---------- */
+main{padding-bottom:40px}
+section{margin-top:44px}
+.head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 16px;margin-bottom:14px}
+.head h2{margin:0;font:700 clamp(26px,4vw,34px)/1 var(--display);letter-spacing:.01em}
+.head p{margin:0;color:var(--mute);font-size:14px}
+.empty{margin:0;padding:28px 18px;background:var(--panel);border:1px dashed var(--line);color:var(--mute);border-radius:4px}
+
+/* ---------- hero: tower + last race ---------- */
+.hero{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:28px;align-items:start;margin-top:28px}
+.row{
+  display:grid;grid-template-columns:48px 6px 62px minmax(0,1fr) 54px 56px;align-items:center;gap:0 14px;
+  height:66px;padding-right:22px;background:var(--panel);position:relative;
+  clip-path:polygon(0 0,100% 0,calc(100% - 14px) 100%,0 100%);
+}
+.row + .row{margin-top:4px}
+.row.lead{background:linear-gradient(90deg,#262630,var(--panel) 70%)}
+.pos{align-self:stretch;display:grid;place-items:center;background:#fff;color:#000;font:800 28px/1 var(--display)}
+.livery{width:6px;height:44px;background:var(--c);box-shadow:0 0 0 1px rgba(255,255,255,.35)}
+.code{font:800 30px/1 var(--display);letter-spacing:.03em}
+.who{min-width:0}
+.who b{display:flex;align-items:center;gap:8px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.who .no{font:700 14px/1 var(--display);color:var(--mute);letter-spacing:.04em}
+.who .share{display:block;height:3px;margin-top:7px;background:#2a2a34}
+.who .share i{display:block;height:100%;background:var(--c);filter:brightness(1.25)}
+.tag{display:inline-block;padding:1px 7px;font:700 11px/16px var(--body);background:var(--purple);color:#fff;border-radius:2px;letter-spacing:.02em}
+.wins{font:800 40px/1 var(--display);text-align:right}
+.gap{font-size:14px;color:var(--mute);text-align:right;font-variant-numeric:tabular-nums}
+.tower-note{margin:10px 0 0;color:var(--mute);font-size:13px}
+
+.last{position:relative;min-height:290px;overflow:hidden;background:var(--panel);border:1px solid var(--line);display:flex;flex-direction:column;justify-content:flex-end}
+.last .flagbg{position:absolute;inset:0;background-size:cover;background-position:center;opacity:.55;filter:saturate(1.1)}
+.last::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(12,12,15,.1) 0%,rgba(12,12,15,.55) 45%,rgba(12,12,15,.96) 100%)}
+.last .body{position:relative;z-index:1;padding:22px 20px 20px}
+.last .when{margin:0 0 6px;font-size:13px;color:#d6d6e0}
+.last h3{margin:0;font:800 clamp(30px,4vw,40px)/1 var(--display)}
+.last .circuit{margin:4px 0 16px;color:#cfcfda;font-size:14px}
+.last .winner{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px}
+.last .winner .livery{height:28px}
+.last.blank{justify-content:center;align-items:center;text-align:center;color:var(--mute)}
+.last.blank::after{display:none}
+
+/* ---------- stat strip ---------- */
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin-top:28px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.stat{padding:16px 18px}
+.stat + .stat{border-left:1px solid var(--line)}
+.stat .v{font:800 38px/1 var(--display)}
+.stat .v small{font:600 15px var(--body);color:var(--mute);margin-left:6px}
+.stat .l{margin-top:6px;color:var(--mute);font-size:13px}
+
+/* ---------- chart ---------- */
+.chartbox{background:var(--panel);border:1px solid var(--line);padding:14px 10px 8px}
+#chart svg{display:block;width:100%;height:auto;overflow:visible}
+#chart text{font-family:var(--body)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;padding:6px 10px 4px;color:var(--mute);font-size:13px}
+.legend span{display:inline-flex;align-items:center;gap:7px}
+.legend i{width:14px;height:4px;background:var(--c)}
+
+/* ---------- tracks ---------- */
+.tracks{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px}
+.tile{display:flex;flex-direction:column;gap:8px;min-height:92px;padding:11px 12px;background:var(--panel);border-left:4px solid var(--line)}
+.tile.off{background:transparent;border:1px dashed #2a2a33;border-left:4px solid #2a2a33;opacity:.55}
+.tile .t{display:flex;align-items:center;gap:9px;min-width:0}
+.tile .t img{width:24px;height:18px;object-fit:cover;flex:none;border-radius:2px}
+.tile .t b{font-weight:700;font-size:15px;line-height:1.2}
+.tile .c{font-size:12px;color:var(--mute);line-height:1.3}
+.dots{display:flex;flex-wrap:wrap;gap:5px;margin-top:auto}
+.dots i{width:12px;height:12px;border-radius:50%;background:var(--c);box-shadow:0 0 0 1px rgba(255,255,255,.4)}
+
+/* ---------- race log ---------- */
+.log{background:var(--panel);border:1px solid var(--line)}
+.lr{display:grid;grid-template-columns:56px minmax(0,1.4fr) minmax(0,1fr) 70px 92px 44px;align-items:center;gap:0 12px;padding:11px 14px;border-top:1px solid var(--line)}
+.lr:first-child{border-top:0}
+.lr .n{font:800 22px/1 var(--display);color:var(--mute)}
+.lr .trk{display:flex;align-items:center;gap:10px;min-width:0}
+.lr .trk img{width:24px;height:18px;object-fit:cover;flex:none;border-radius:2px}
+.lr .trk b{display:block;font-weight:600;line-height:1.2}
+.lr .trk small{display:block;color:var(--mute);font-size:12px;line-height:1.2}
+.lr .win{display:flex;align-items:center;gap:9px;font-weight:600}
+.lr .win .livery{height:22px;width:5px}
+.lr .meta{color:var(--mute);font-size:14px}
+.lr .ed{justify-self:end}
+.lr.hd{font-size:12px;color:var(--mute);padding-top:9px;padding-bottom:9px;background:var(--panel-2)}
+
+footer{margin-top:50px}
+footer p{margin:0;padding:16px;color:var(--mute);font-size:13px;text-align:center}
+
+/* ---------- dialogs ---------- */
+dialog{padding:0;border:1px solid var(--line);border-radius:6px;background:var(--panel);color:var(--ink);width:min(480px,calc(100vw - 24px));max-height:calc(100dvh - 24px)}
+dialog.wide{width:min(640px,calc(100vw - 24px))}
+dialog::backdrop{background:rgba(0,0,0,.72)}
+.dlg{padding:20px}
+.dlg h3{margin:0 0 4px;font:700 28px/1.1 var(--display)}
+.dlg > p.sub{margin:0 0 16px;color:var(--mute);font-size:14px}
+.field{display:block;margin-bottom:14px}
+.field > span,.field > legend{display:block;margin-bottom:6px;font-size:13px;font-weight:600;color:#c9c9d6;padding:0}
+fieldset.field{border:0;padding:0;margin:0 0 14px;min-width:0}
+.in{width:100%;min-height:44px;padding:9px 12px;background:#0f0f13;border:1px solid var(--line);border-radius:4px}
+.in:focus-visible{outline-offset:0;border-color:#fff}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{position:relative}
+.chip input{position:absolute;opacity:0;inset:0;cursor:pointer;margin:0}
+.chip span{display:flex;align-items:center;gap:9px;min-height:44px;padding:8px 14px 8px 10px;background:#0f0f13;border:1px solid var(--line);border-radius:4px;font-weight:600}
+.chip span::before{content:"";width:6px;height:24px;background:var(--c);box-shadow:0 0 0 1px rgba(255,255,255,.35)}
+.chip input:checked + span{background:#fff;color:#000;border-color:#fff}
+.chip input:focus-visible + span{outline:2px solid #fff;outline-offset:2px}
+.err{min-height:20px;margin:0 0 10px;color:#ff7a72;font-size:14px}
+.dlg .acts{display:flex;flex-wrap:wrap;gap:10px;justify-content:flex-end;align-items:center}
+.dlg .acts .spacer{margin-right:auto}
+.drv{display:grid;grid-template-columns:minmax(0,1fr) 78px 52px auto auto;gap:8px;align-items:center;margin-bottom:10px}
+.drv .in{min-height:40px}
+.drv input[type=color]{padding:2px;height:40px;min-height:40px;cursor:pointer}
+.drv label.act{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--mute);white-space:nowrap}
+.drv.new{padding-top:12px;margin-top:6px;border-top:1px solid var(--line)}
+
+.toasts{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);display:flex;flex-direction:column;gap:8px;z-index:50;width:min(460px,calc(100vw - 24px));pointer-events:none}
+.toast{padding:12px 16px;background:#fff;color:#000;border-left:6px solid var(--purple);font-weight:600;box-shadow:0 8px 30px rgba(0,0,0,.5);animation:rise .25s ease-out}
+@keyframes rise{from{transform:translateY(12px);opacity:0}}
+
+/* ---------- start lights ---------- */
+.boot{position:fixed;inset:0;z-index:100;background:var(--carbon);display:grid;place-items:center;transition:opacity .35s}
+.boot.gone{opacity:0;pointer-events:none}
+.gantry{display:flex;gap:clamp(8px,2.4vw,18px);padding:18px 22px;background:#050507;border:1px solid var(--line);border-radius:10px}
+.gantry i{width:clamp(30px,8vw,52px);height:clamp(30px,8vw,52px);border-radius:50%;background:#2a0b0b;box-shadow:inset 0 0 0 3px #190606}
+.gantry i.on{background:var(--red);box-shadow:0 0 28px rgba(225,6,0,.75),inset 0 0 0 3px #ff5a52}
+
+/* ---------- small screens ---------- */
+@media (max-width:860px){
+  .hero{grid-template-columns:1fr;gap:22px}
+  .last{min-height:230px}
+}
+@media (max-width:620px){
+  .row{grid-template-columns:40px 5px minmax(0,1fr) 44px 48px;gap:0 10px;height:62px;padding-right:18px}
+  .row .code,.who .no{display:none}
+  .tracks{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .wins{font-size:34px}
+  .stat{padding:14px 10px}.stat .v{font-size:30px}
+  .lr{grid-template-columns:40px minmax(0,1fr) 40px;grid-template-areas:"n trk ed" ". win ed" ". meta ed";gap:4px 10px}
+  .lr.hd{display:none}
+  .lr .n{grid-area:n}.lr .trk{grid-area:trk}.lr .win{grid-area:win}.lr .ed{grid-area:ed}
+  .lr .meta{grid-area:meta}.lr .meta.lob{display:none}
+  .drv{grid-template-columns:minmax(0,1fr) 70px 48px;}
+  .drv .act,.drv .btn{grid-column:span 1}
+  .two{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+
+<div class="boot" id="boot" aria-hidden="true"><div class="gantry"><i></i><i></i><i></i><i></i><i></i></div></div>
+
+<header class="top">
+  <div class="stripe"></div>
+  <div class="wrap bar">
+    <div class="brand">
+      <h1>2026 Season 1</h1>
+      <p>F1 26 online league · every round of the 2026 calendar, in random order</p>
+    </div>
+    <div class="actions">
+      <span class="live" id="live"><i></i><span id="liveTxt">Connecting</span></span>
+      <button class="btn" id="lockBtn" type="button">Unlock editing</button>
+      <button class="btn primary" id="addBtn" type="button">Log a race</button>
+    </div>
+  </div>
+  <div class="checker"></div>
+</header>
+
+<main class="wrap">
+
+  <div class="hero">
+    <section style="margin-top:0" aria-labelledby="h-stand">
+      <div class="head">
+        <h2 id="h-stand">Standings</h2>
+        <p id="standSub">Race wins only</p>
+      </div>
+      <div id="tower"><p class="empty">Loading standings…</p></div>
+      <p class="tower-note"><button class="btn ghost" id="drvBtn" type="button">Manage drivers</button></p>
+    </section>
+
+    <section style="margin-top:0" aria-labelledby="h-last">
+      <div class="head"><h2 id="h-last">Last race</h2></div>
+      <div id="last" class="last blank"><p>Waiting for data…</p></div>
+    </section>
+  </div>
+
+  <div class="stats" id="stats" aria-label="Season stats"></div>
+
+  <section aria-labelledby="h-chart">
+    <div class="head"><h2 id="h-chart">Wins over time</h2><p>Cumulative wins after each race</p></div>
+    <div class="chartbox"><div id="chart"></div><div class="legend" id="legend"></div></div>
+  </section>
+
+  <section aria-labelledby="h-tracks">
+    <div class="head"><h2 id="h-tracks">Tracks</h2><p id="trackSub">The 2026 calendar</p></div>
+    <div class="tracks" id="tracks"></div>
+  </section>
+
+  <section aria-labelledby="h-log">
+    <div class="head"><h2 id="h-log">Race log</h2><p>Newest first</p></div>
+    <div id="log"></div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="checker"></div>
+  <p>Season 1 counts wins only. Points for finishing positions arrive in Season 2.</p>
+</footer>
+
+<!-- Race dialog -->
+<dialog id="raceDlg">
+  <form class="dlg" id="raceForm" method="dialog" novalidate>
+    <h3 id="raceTitle">Log a race</h3>
+    <p class="sub" id="raceSub">Pick the track and who won.</p>
+    <label class="field"><span>Track</span><select class="in" name="track" id="fTrack" required></select></label>
+    <fieldset class="field"><legend>Winner</legend><div class="chips" id="fWinner"></div></fieldset>
+    <div class="two">
+      <label class="field"><span>Date</span><input class="in" type="date" name="date" id="fDate" required></label>
+      <label class="field"><span>Players in lobby</span><input class="in" type="number" name="lobby" id="fLobby" min="2" max="8" value="3" required></label>
+    </div>
+    <p class="err" id="raceErr" role="alert"></p>
+    <div class="acts">
+      <button class="btn danger spacer" type="button" id="delBtn" hidden>Delete race</button>
+      <button class="btn" type="button" data-close>Cancel</button>
+      <button class="btn primary" type="submit" id="raceSave">Save race</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- Passcode dialog -->
+<dialog id="passDlg">
+  <form class="dlg" id="passForm" method="dialog" novalidate>
+    <h3>Unlock editing</h3>
+    <p class="sub">Enter the league passcode to log or change races. Everyone can view without it.</p>
+    <label class="field"><span>Passcode</span><input class="in" type="password" id="passIn" autocomplete="off" required></label>
+    <p class="err" id="passErr" role="alert"></p>
+    <div class="acts">
+      <button class="btn" type="button" data-close>Cancel</button>
+      <button class="btn primary" type="submit" id="passGo">Unlock</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- Drivers dialog -->
+<dialog id="drvDlg" class="wide">
+  <div class="dlg">
+    <h3>Drivers</h3>
+    <p class="sub">Change names, numbers and colors any time. Untick Active to hide someone with no wins.</p>
+    <div id="drvList"></div>
+    <p class="err" id="drvErr" role="alert"></p>
+    <div class="acts"><button class="btn" type="button" data-close>Done</button></div>
+  </div>
+</dialog>
+
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+(function(){
+'use strict';
+
+/* ======== CONFIG ======== */
+const SB_URL = 'https://lykfpucrnczjoqjmouqr.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx5a2ZwdWNybmN6am9xam1vdXFyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMxMjIyOTksImV4cCI6MjEwODY5ODI5OX0.WVdg7h_v-UYjouAVUBkEmHc4cVuLJdjtdXaPCk_x174';
+const SEASON = 1;
+/* ======================== */
+
+const $ = (s, r=document) => r.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const ls = {
+  get(k){ try{ return localStorage.getItem(k) }catch{ return null } },
+  set(k,v){ try{ localStorage.setItem(k,v) }catch{} },
+  del(k){ try{ localStorage.removeItem(k) }catch{} }
+};
+const ss = {
+  get(k){ try{ return sessionStorage.getItem(k) }catch{ return null } },
+  set(k,v){ try{ sessionStorage.setItem(k,v) }catch{} }
+};
+const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+const sb = window.supabase.createClient(SB_URL, SB_KEY);
+const S = { drivers:[], tracks:[], races:[], pass: ls.get('f1l_pass'), C:null };
+const mine = new Set();
+
+/* ---------- helpers ---------- */
+function lum(hex){
+  const m = /^#?([\da-f]{2})([\da-f]{2})([\da-f]{2})$/i.exec(hex || '');
+  if(!m) return .5;
+  const [r,g,b] = [1,2,3].map(i => parseInt(m[i],16)/255);
+  return .2126*r + .7152*g + .0722*b;
+}
+const vivid = d => lum(d.color) < .12 ? '#d8d8e0' : d.color;
+const code = d => { const p = d.name.trim().split(/\s+/); return (p[p.length-1] || '???').slice(0,3).toUpperCase(); };
+const shortGp = t => t.gp_name.replace(' Grand Prix', ' GP');
+const flag = (t,w=40) => `https://flagcdn.com/w${w}/${t.country_code}.png`;
+const flagImg = t => `<img src="${flag(t)}" alt="" width="24" height="18" loading="lazy" onerror="this.style.visibility='hidden'">`;
+const fmtDate = s => { const [y,m,d] = String(s).split('-').map(Number); return new Date(y,m-1,d).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}); };
+const today = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; };
+const driverById = id => S.drivers.find(d => d.id === id);
+const trackById = id => S.tracks.find(t => t.id === id);
+const plural = (n, a, b) => n === 1 ? a : b;
+
+function toast(msg){
+  const el = document.createElement('div');
+  el.className = 'toast'; el.textContent = msg;
+  $('#toasts').appendChild(el);
+  setTimeout(() => el.remove(), 4800);
+}
+
+/* ---------- data ---------- */
+async function load(){
+  const [d, t, r] = await Promise.all([
+    sb.from('drivers').select('*').order('created_at'),
+    sb.from('tracks').select('*').order('calendar_order'),
+    sb.from('races').select('*').eq('season', SEASON).order('race_date').order('created_at')
+  ]);
+  const err = d.error || t.error || r.error;
+  if(err) throw err;
+  S.drivers = d.data; S.tracks = t.data; S.races = r.data;
+  render();
+}
+let loadTimer;
+function queueLoad(){ clearTimeout(loadTimer); loadTimer = setTimeout(() => load().catch(()=>{}), 200); }
+
+async function rpc(name, args){
+  const { data, error } = await sb.rpc(name, args);
+  if(error) throw error;
+  return data;
+}
+
+/* ---------- derived stats ---------- */
+function compute(){
+  const races = [...S.races].sort((a,b) =>
+    a.race_date < b.race_date ? -1 : a.race_date > b.race_date ? 1 : (a.created_at < b.created_at ? -1 : 1));
+  races.forEach((r,i) => r.no = i+1);
+  const wins = new Map(S.drivers.map(d => [d.id, 0]));
+  const winNos = new Map(S.drivers.map(d => [d.id, []]));
+  races.forEach(r => {
+    if(wins.has(r.winner_id)){ wins.set(r.winner_id, wins.get(r.winner_id)+1); winNos.get(r.winner_id).push(r.no); }
+  });
+  const shown = S.drivers.filter(d => d.active || wins.get(d.id) > 0);
+  const order = [...shown].sort((a,b) => {
+    const wa = wins.get(a.id), wb = wins.get(b.id);
+    if(wa !== wb) return wb - wa;
+    const ta = wa ? winNos.get(a.id)[wa-1] : 0, tb = wb ? winNos.get(b.id)[wb-1] : 0;
+    if(ta !== tb) return ta - tb;               // reached the same tally first
+    return new Date(a.created_at) - new Date(b.created_at);
+  });
+  const cum = new Map(shown.map(d => [d.id, [0]]));
+  races.forEach(r => shown.forEach(d => {
+    const arr = cum.get(d.id);
+    arr.push(arr[arr.length-1] + (r.winner_id === d.id ? 1 : 0));
+  }));
+  let cur = {id:null, n:0}, best = {id:null, n:0};
+  races.forEach(r => {
+    cur = r.winner_id === cur.id ? {id:cur.id, n:cur.n+1} : {id:r.winner_id, n:1};
+    if(cur.n > best.n) best = {...cur};
+  });
+  const byTrack = new Map();
+  races.forEach(r => { if(!byTrack.has(r.track_id)) byTrack.set(r.track_id, []); byTrack.get(r.track_id).push(r); });
+  return { races, wins, order, cum, cur, best, byTrack, last: races[races.length-1] || null };
+}
+
+/* ---------- render ---------- */
+function render(){
+  const c = S.C = compute();
+  $('#standSub').textContent = c.races.length
+    ? `${c.races.length} ${plural(c.races.length,'race','races')} run · race wins only`
+    : 'Race wins only';
+  renderTower(c); renderLast(c); renderStats(c); renderChart(c); renderTracks(c); renderLog(c);
+  renderChrome();
+}
+
+function renderChrome(){
+  $('#lockBtn').textContent = S.pass ? 'Editing unlocked' : 'Unlock editing';
+  $('#lockBtn').setAttribute('aria-pressed', S.pass ? 'true' : 'false');
+}
+
+function renderTower(c){
+  const box = $('#tower');
+  if(!c.order.length){ box.innerHTML = '<p class="empty">No drivers yet. Use Manage drivers to add the first one.</p>'; return; }
+  const before = {};
+  box.querySelectorAll('.row').forEach(r => before[r.dataset.id] = r.getBoundingClientRect().top);
+  const total = c.races.length;
+  const leadWins = c.wins.get(c.order[0].id);
+  box.innerHTML = c.order.map((d,i) => {
+    const w = c.wins.get(d.id);
+    const gap = !total ? '' : (i === 0 || w === leadWins) ? (i === 0 ? 'Leader' : 'Level') : `−${leadWins - w}`;
+    const share = total ? Math.round(100*w/total) : 0;
+    const lastWin = c.last && c.last.winner_id === d.id;
+    return `<div class="row ${i===0&&total?'lead':''}" data-id="${d.id}" style="--c:${esc(d.color)}">
+      <div class="pos">${i+1}</div>
+      <div class="livery"></div>
+      <div class="code">${esc(code(d))}</div>
+      <div class="who"><b>${esc(d.name)} <span class="no">#${d.driver_number}</span>${lastWin?' <span class="tag">Won last race</span>':''}</b><span class="share" title="${share}% of races won"><i style="width:${share}%"></i></span></div>
+      <div class="wins" aria-label="${w} ${plural(w,'win','wins')}">${w}</div>
+      <div class="gap">${gap}</div>
+    </div>`;
+  }).join('');
+  if(!reduceMotion){
+    box.querySelectorAll('.row').forEach(r => {
+      const was = before[r.dataset.id];
+      if(was == null) return;
+      const dy = was - r.getBoundingClientRect().top;
+      if(!dy) return;
+      r.style.transition = 'none'; r.style.transform = `translateY(${dy}px)`;
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        r.style.transition = 'transform .6s cubic-bezier(.2,.8,.2,1)'; r.style.transform = '';
+      }));
+    });
+  }
+}
+
+function renderLast(c){
+  const el = $('#last');
+  if(!c.last){
+    el.className = 'last blank';
+    el.innerHTML = '<p>No races yet.<br>The first result will show up here.</p>';
+    return;
+  }
+  const r = c.last, t = trackById(r.track_id), d = driverById(r.winner_id);
+  if(!t || !d){ el.className = 'last blank'; el.innerHTML = '<p>Loading…</p>'; return; }
+  el.className = 'last';
+  el.innerHTML = `<div class="flagbg" style="background-image:url('${flag(t,320)}')"></div>
+    <div class="body">
+      <p class="when">Race ${r.no} · ${fmtDate(r.race_date)}</p>
+      <h3>${esc(t.gp_name)}</h3>
+      <p class="circuit">${esc(t.circuit)}</p>
+      <div class="winner" style="--c:${esc(d.color)}"><span class="livery"></span><span>${esc(d.name)} won</span></div>
+    </div>`;
+}
+
+function renderStats(c){
+  const cur = c.cur.id ? driverById(c.cur.id) : null, best = c.best.id ? driverById(c.best.id) : null;
+  const visited = c.byTrack.size;
+  $('#stats').innerHTML = `
+    <div class="stat"><div class="v">${cur ? c.cur.n : '–'}${cur ? `<small>${esc(code(cur))}</small>` : ''}</div><div class="l">Current win streak</div></div>
+    <div class="stat"><div class="v">${best ? c.best.n : '–'}${best ? `<small>${esc(code(best))}</small>` : ''}</div><div class="l">Longest win streak</div></div>
+    <div class="stat"><div class="v">${visited}<small>of ${S.tracks.length}</small></div><div class="l">Tracks raced</div></div>`;
+}
+
+function renderChart(c){
+  const el = $('#chart'), n = c.races.length;
+  $('#legend').innerHTML = c.order.map(d => `<span style="--c:${esc(vivid(d))}"><i></i>${esc(d.name)}</span>`).join('');
+  if(!n){ el.innerHTML = '<p class="empty">The chart starts after the first race.</p>'; return; }
+  const W = Math.max(300, Math.min(el.clientWidth || 700, 900));
+  const H = W < 520 ? 250 : 320;
+  const L = 30, R = 76, T = 14, B = 30;
+  const maxW = Math.max(3, ...c.order.map(d => c.wins.get(d.id)));
+  const x = i => L + (W - L - R) * i / n;
+  const y = v => H - B - (H - B - T) * v / maxW;
+  const yStep = maxW > 12 ? Math.ceil(maxW/6) : 1;
+  let g = '';
+  for(let v = 0; v <= maxW; v += yStep){
+    g += `<line x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}" stroke="#2d2d38" stroke-width="1"/>
+          <text x="${L-8}" y="${y(v)+4}" text-anchor="end" font-size="11" fill="#9d9dad">${v}</text>`;
+  }
+  const xEvery = Math.max(1, Math.ceil(n / (W < 520 ? 6 : 12)));
+  for(let i = 1; i <= n; i += xEvery){
+    g += `<text x="${x(i)}" y="${H-B+18}" text-anchor="middle" font-size="11" fill="#9d9dad">${i}</text>`;
+  }
+  g += `<text x="${L}" y="${H-2}" font-size="11" fill="#9d9dad">Race number</text>`;
+  const m = c.order.length, ends = [];
+  let lines = '';
+  c.order.forEach((d,k) => {
+    const off = (k - (m-1)/2) * 2.4, cum = c.cum.get(d.id), col = vivid(d);
+    let p = `M${x(0)} ${y(cum[0]) + off}`;
+    for(let i = 1; i <= n; i++) p += ` H${x(i)} V${y(cum[i]) + off}`;
+    lines += `<path d="${p}" fill="none" stroke="${esc(col)}" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>`;
+    ends.push({ y: y(cum[n]) + off, text: `${code(d)} ${cum[n]}`, col, cy: y(cum[n]) + off });
+  });
+  ends.sort((a,b) => a.y - b.y);
+  for(let i = 1; i < ends.length; i++) if(ends[i].y - ends[i-1].y < 15) ends[i].y = ends[i-1].y + 15;
+  ends.forEach(e => {
+    lines += `<circle cx="${x(n)}" cy="${e.cy}" r="4.5" fill="${esc(e.col)}"/>
+              <text x="${x(n)+11}" y="${e.y+4}" font-size="13" font-weight="700" fill="${esc(e.col)}">${esc(e.text)}</text>`;
+  });
+  const summary = c.order.map(d => `${d.name} ${c.wins.get(d.id)}`).join(', ');
+  el.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Cumulative wins after ${n} races. ${esc(summary)}.">${g}${lines}</svg>`;
+}
+
+function renderTracks(c){
+  $('#trackSub').textContent = `${c.byTrack.size} of ${S.tracks.length} raced · a dot is one race`;
+  $('#tracks').innerHTML = S.tracks.map(t => {
+    const rs = c.byTrack.get(t.id) || [];
+    if(!rs.length) return `<div class="tile off">
+      <div class="t">${flagImg(t)}<b>${esc(shortGp(t))}</b></div><div class="c">${esc(t.circuit)}</div></div>`;
+    const tally = new Map();
+    rs.forEach(r => tally.set(r.winner_id, (tally.get(r.winner_id)||0) + 1));
+    const top = [...tally.entries()].sort((a,b) => b[1]-a[1]);
+    const owner = top.length && (top.length === 1 || top[0][1] > top[1][1]) ? driverById(top[0][0]) : null;
+    const dots = rs.map(r => { const d = driverById(r.winner_id); return d ? `<i style="--c:${esc(d.color)}" title="Race ${r.no}: ${esc(d.name)}"></i>` : ''; }).join('');
+    return `<div class="tile" style="border-left-color:${owner ? esc(vivid(owner)) : '#fff'}">
+      <div class="t">${flagImg(t)}<b>${esc(shortGp(t))}</b></div><div class="c">${esc(t.circuit)}</div><div class="dots">${dots}</div></div>`;
+  }).join('');
+}
+
+function renderLog(c){
+  const el = $('#log');
+  if(!c.races.length){ el.innerHTML = '<p class="empty">No races logged yet. After your next race, use Log a race to add the result.</p>'; return; }
+  const rows = [...c.races].reverse().map(r => {
+    const t = trackById(r.track_id), d = driverById(r.winner_id);
+    if(!t || !d) return '';
+    return `<div class="lr">
+      <div class="n">${r.no}</div>
+      <div class="trk">${flagImg(t)}<div><b>${esc(t.gp_name)}</b><small>${esc(t.circuit)}</small></div></div>
+      <div class="win" style="--c:${esc(d.color)}"><span class="livery"></span>${esc(d.name)}</div>
+      <div class="meta lob">${r.lobby_size} ${plural(r.lobby_size,'player','players')}</div>
+      <div class="meta">${fmtDate(r.race_date)}</div>
+      <button class="btn ghost ed" type="button" data-edit="${r.id}" aria-label="Edit race ${r.no}">Edit</button>
+    </div>`;
+  }).join('');
+  el.innerHTML = `<div class="log"><div class="lr hd"><div>Race</div><div>Track</div><div>Winner</div><div>Lobby</div><div>Date</div><div></div></div>${rows}</div>`;
+}
+
+/* ---------- passcode ---------- */
+function setPass(p){
+  S.pass = p;
+  p ? ls.set('f1l_pass', p) : ls.del('f1l_pass');
+  renderChrome();
+}
+let passResolve = null;
+function askPass(msg){
+  return new Promise(res => {
+    passResolve = res;
+    $('#passIn').value = ''; $('#passErr').textContent = msg || '';
+    $('#passDlg').showModal();
+    $('#passIn').focus();
+  });
+}
+function finishPass(ok){
+  if(passResolve){ const r = passResolve; passResolve = null; r(ok); }
+}
+$('#passForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const v = $('#passIn').value.trim();
+  if(!v){ $('#passErr').textContent = 'Enter the passcode.'; return; }
+  $('#passGo').disabled = true;
+  try{
+    const ok = await rpc('check_passcode', { p_passcode: v });
+    if(ok){ setPass(v); $('#passDlg').close(); finishPass(true); }
+    else $('#passErr').textContent = 'That passcode is wrong. Ask Rohan for the right one.';
+  }catch(err){ $('#passErr').textContent = 'Could not check the passcode. Check your connection and try again.'; }
+  $('#passGo').disabled = false;
+});
+$('#passDlg').addEventListener('close', () => finishPass(false));
+
+async function ensureUnlocked(){ return S.pass ? true : await askPass(); }
+async function withPass(fn){
+  try{ return await fn(S.pass); }
+  catch(e){
+    if(/passcode/i.test(e.message || '')){
+      setPass(null);
+      if(await askPass('The passcode changed or was wrong. Enter it again.')) return await fn(S.pass);
+    }
+    throw e;
+  }
+}
+
+$('#lockBtn').addEventListener('click', async () => {
+  if(S.pass){ setPass(null); toast('Editing locked'); } else await askPass();
+});
+
+/* ---------- race dialog ---------- */
+let editingId = null;
+function openRace(race){
+  editingId = race ? race.id : null;
+  const last = S.C && S.C.last;
+  $('#raceTitle').textContent = race ? `Edit race ${race.no}` : 'Log a race';
+  $('#raceSub').textContent = race ? 'Fix the track, winner or date.' : 'Pick the track and who won.';
+  $('#raceSave').textContent = 'Save race';
+  $('#raceErr').textContent = '';
+  const delBtn = $('#delBtn'); delBtn.hidden = !race; delBtn.textContent = 'Delete race'; delBtn.classList.remove('armed');
+  $('#fTrack').innerHTML = '<option value="">Choose a track</option>' + S.tracks.map(t =>
+    `<option value="${t.id}">${esc(t.gp_name)} — ${esc(t.circuit)}</option>`).join('');
+  const pool = S.drivers.filter(d => d.active || (race && d.id === race.winner_id));
+  $('#fWinner').innerHTML = pool.map(d =>
+    `<label class="chip" style="--c:${esc(d.color)}"><input type="radio" name="winner" value="${d.id}"><span>${esc(d.name)}</span></label>`).join('');
+  $('#fTrack').value = race ? race.track_id : '';
+  $('#fDate').value = race ? race.race_date : today();
+  $('#fLobby').value = race ? race.lobby_size : (last ? last.lobby_size : 3);
+  if(race){ const r = $(`#fWinner input[value="${race.winner_id}"]`); if(r) r.checked = true; }
+  $('#raceDlg').showModal();
+  (race ? $('#fTrack') : $('#fTrack')).focus();
+}
+
+$('#addBtn').addEventListener('click', async () => { if(await ensureUnlocked()) openRace(null); });
+$('#log').addEventListener('click', async e => {
+  const b = e.target.closest('[data-edit]'); if(!b) return;
+  const race = S.C.races.find(r => r.id === b.dataset.edit);
+  if(race && await ensureUnlocked()) openRace(race);
+});
+
+$('#raceForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const err = $('#raceErr'); err.textContent = '';
+  const track = +$('#fTrack').value;
+  const wEl = $('#fWinner input:checked');
+  const date = $('#fDate').value, lobby = +$('#fLobby').value;
+  if(!track){ err.textContent = 'Choose the track.'; return; }
+  if(!wEl){ err.textContent = 'Choose who won.'; return; }
+  if(!date){ err.textContent = 'Pick the date.'; return; }
+  if(!(lobby >= 2 && lobby <= 8)){ err.textContent = 'Lobby size must be between 2 and 8.'; return; }
+  const save = $('#raceSave'); save.disabled = true; save.textContent = 'Saving…';
+  try{
+    const winner = wEl.value, t = trackById(track), d = driverById(winner);
+    if(editingId){
+      await withPass(p => rpc('update_race', { p_passcode:p, p_race_id:editingId, p_track_id:track, p_winner_id:winner, p_race_date:date, p_lobby_size:lobby }));
+      toast('Race updated');
+    }else{
+      const id = await withPass(p => rpc('add_race', { p_passcode:p, p_track_id:track, p_winner_id:winner, p_race_date:date, p_lobby_size:lobby, p_season:SEASON }));
+      if(id) mine.add(id);
+      toast(`${d.name} wins at ${shortGp(t)}`);
+    }
+    $('#raceDlg').close();
+    await load();
+  }catch(ex){
+    err.textContent = ex && ex.message ? `Could not save: ${ex.message}` : 'Could not save. Check your connection and try again.';
+  }
+  save.disabled = false; save.textContent = 'Save race';
+});
+
+$('#delBtn').addEventListener('click', async e => {
+  const b = e.currentTarget;
+  if(!b.classList.contains('armed')){ b.classList.add('armed'); b.textContent = 'Click again to delete'; return; }
+  b.disabled = true;
+  try{
+    await withPass(p => rpc('delete_race', { p_passcode:p, p_race_id:editingId }));
+    $('#raceDlg').close(); toast('Race deleted'); await load();
+  }catch(ex){ $('#raceErr').textContent = `Could not delete: ${ex.message || 'try again'}`; }
+  b.disabled = false;
+});
+
+/* ---------- drivers dialog ---------- */
+function drvRow(d){
+  const isNew = !d;
+  return `<div class="drv ${isNew?'new':''}" data-id="${d ? d.id : ''}">
+    <input class="in" name="name" value="${esc(d ? d.name : '')}" placeholder="${isNew ? 'New driver name' : 'Name'}" aria-label="Driver name">
+    <input class="in" name="num" type="number" min="1" max="99" value="${d ? d.driver_number : ''}" placeholder="No." aria-label="Driver number">
+    <input class="in" name="color" type="color" value="${esc(d ? d.color : '#888888')}" aria-label="Team color">
+    ${isNew ? '<span></span>' : `<label class="act"><input type="checkbox" name="active" ${d.active?'checked':''}> Active</label>`}
+    <button class="btn" type="button" data-save>${isNew ? 'Add driver' : 'Save'}</button>
+  </div>`;
+}
+function renderDrivers(){ $('#drvList').innerHTML = S.drivers.map(drvRow).join('') + drvRow(null); }
+$('#drvBtn').addEventListener('click', async () => {
+  if(!(await ensureUnlocked())) return;
+  $('#drvErr').textContent = ''; renderDrivers(); $('#drvDlg').showModal();
+});
+$('#drvList').addEventListener('click', async e => {
+  const b = e.target.closest('[data-save]'); if(!b) return;
+  const row = b.closest('.drv'), id = row.dataset.id;
+  const name = row.querySelector('[name=name]').value.trim();
+  const num = +row.querySelector('[name=num]').value;
+  const color = row.querySelector('[name=color]').value;
+  const active = row.querySelector('[name=active]') ? row.querySelector('[name=active]').checked : true;
+  const err = $('#drvErr'); err.textContent = '';
+  if(!name){ err.textContent = 'Enter a name.'; return; }
+  if(!(num >= 1 && num <= 99)){ err.textContent = 'Driver number must be between 1 and 99.'; return; }
+  b.disabled = true;
+  try{
+    if(id) await withPass(p => rpc('update_driver', { p_passcode:p, p_driver_id:id, p_name:name, p_number:num, p_color:color, p_active:active }));
+    else await withPass(p => rpc('add_driver', { p_passcode:p, p_name:name, p_number:num, p_color:color }));
+    await load(); renderDrivers(); toast(id ? 'Driver saved' : `${name} joined the league`);
+  }catch(ex){ err.textContent = `Could not save: ${ex.message || 'try again'}`; }
+  b.disabled = false;
+});
+
+/* generic dialog close buttons + click on backdrop */
+document.querySelectorAll('dialog').forEach(dlg => {
+  dlg.addEventListener('click', e => {
+    if(e.target === dlg || e.target.closest('[data-close]')) dlg.close();
+  });
+});
+
+/* ---------- live updates ---------- */
+function setLive(on){
+  $('#live').classList.toggle('on', on);
+  $('#liveTxt').textContent = on ? 'Live' : 'Offline — refresh to reconnect';
+}
+function startRealtime(){
+  sb.channel('league-live')
+    .on('postgres_changes', { event:'*', schema:'public', table:'races' }, p => {
+      queueLoad();
+      if(p.eventType === 'INSERT' && p.new && !mine.has(p.new.id)){
+        setTimeout(() => {
+          const d = driverById(p.new.winner_id), t = trackById(p.new.track_id);
+          if(d && t) toast(`${d.name} won at ${shortGp(t)}`);
+        }, 700);
+      }
+    })
+    .on('postgres_changes', { event:'*', schema:'public', table:'drivers' }, () => queueLoad())
+    .subscribe(status => setLive(status === 'SUBSCRIBED'));
+  document.addEventListener('visibilitychange', () => { if(!document.hidden) queueLoad(); });
+}
+
+let resizeT;
+addEventListener('resize', () => { clearTimeout(resizeT); resizeT = setTimeout(() => S.C && renderChart(S.C), 150); });
+
+/* ---------- boot ---------- */
+async function boot(){
+  const el = $('#boot');
+  const first = !ss.get('f1l_seen') && !reduceMotion;
+  let minWait = Promise.resolve();
+  if(first){
+    ss.set('f1l_seen', '1');
+    const lights = el.querySelectorAll('i');
+    lights.forEach((l,i) => setTimeout(() => l.classList.add('on'), 150 + i*170));
+    minWait = new Promise(r => setTimeout(() => { lights.forEach(l => l.classList.remove('on')); setTimeout(r, 250); }, 150 + 5*170 + 300));
+  }else{
+    el.remove();
+  }
+  try{
+    await Promise.all([load(), minWait]);
+  }catch(e){
+    $('#tower').innerHTML = '<p class="empty">Could not reach the league database. Check your connection, then <button class="btn" type="button" id="retry">Try again</button></p>';
+    $('#retry').addEventListener('click', () => location.reload());
+    console.error(e);
+  }
+  if(first){ el.classList.add('gone'); setTimeout(() => el.remove(), 400); }
+  startRealtime();
+}
+boot();
+})();
+</script>
+</body>
+</html>
