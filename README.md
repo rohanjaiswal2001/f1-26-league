@@ -11,7 +11,7 @@ A static dashboard (one `index.html`) backed by Supabase. Anyone with the link c
 
 ## Passcode
 
-The starting passcode is `lights-out-26`. To change it, open the Supabase SQL editor for the `f1-26-league` project and run:
+The passcode is not stored in this repo (it lives hashed in Supabase), and this repo is public, so don't write it here. Ask Rohan for it. To change it, open the Supabase SQL editor for the `f1-26-league` project and run:
 
 ```sql
 update public.league_settings
@@ -25,7 +25,7 @@ Browsers remember the passcode after the first unlock. If you change it, people 
 
 - **Log a race:** unlock, click Log a race, pick the track, tap the winner, save. Everyone's page updates live.
 - **Fix a mistake:** click Edit on any row in the race log, then change it or delete it.
-- **Driver changes:** Manage drivers lets you edit names, numbers and colors, and add the 4th player when they join.
+- **Driver changes:** Manage drivers lets you edit names, 2 to 4 letter short codes (RJ, JAI, VIJ), numbers and colors, and add the 4th player when they join.
 
 ## Notes
 

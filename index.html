@@ -166,7 +166,7 @@ fieldset.field{border:0;padding:0;margin:0 0 14px;min-width:0}
 .err{min-height:20px;margin:0 0 10px;color:#ff7a72;font-size:14px}
 .dlg .acts{display:flex;flex-wrap:wrap;gap:10px;justify-content:flex-end;align-items:center}
 .dlg .acts .spacer{margin-right:auto}
-.drv{display:grid;grid-template-columns:minmax(0,1fr) 78px 52px auto auto;gap:8px;align-items:center;margin-bottom:10px}
+.drv{display:grid;grid-template-columns:minmax(0,1fr) 70px 70px 52px auto auto;gap:8px;align-items:center;margin-bottom:10px}
 .drv .in{min-height:40px}
 .drv input[type=color]{padding:2px;height:40px;min-height:40px;cursor:pointer}
 .drv label.act{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--mute);white-space:nowrap}
@@ -198,7 +198,7 @@ fieldset.field{border:0;padding:0;margin:0 0 14px;min-width:0}
   .lr.hd{display:none}
   .lr .n{grid-area:n}.lr .trk{grid-area:trk}.lr .win{grid-area:win}.lr .ed{grid-area:ed}
   .lr .meta{grid-area:meta}.lr .meta.lob{display:none}
-  .drv{grid-template-columns:minmax(0,1fr) 70px 48px;}
+  .drv{grid-template-columns:minmax(0,1fr) 64px 64px 48px;}
   .drv .act,.drv .btn{grid-column:span 1}
   .two{grid-template-columns:1fr}
 }
@@ -307,7 +307,7 @@ fieldset.field{border:0;padding:0;margin:0 0 14px;min-width:0}
 <dialog id="drvDlg" class="wide">
   <div class="dlg">
     <h3>Drivers</h3>
-    <p class="sub">Change names, numbers and colors any time. Untick Active to hide someone with no wins.</p>
+    <p class="sub">Change names, short codes, numbers and colors any time. Untick Active to hide someone with no wins.</p>
     <div id="drvList"></div>
     <p class="err" id="drvErr" role="alert"></p>
     <div class="acts"><button class="btn" type="button" data-close>Done</button></div>
@@ -352,7 +352,10 @@ function lum(hex){
   return .2126*r + .7152*g + .0722*b;
 }
 const vivid = d => lum(d.color) < .12 ? '#d8d8e0' : d.color;
-const code = d => { const p = d.name.trim().split(/\s+/); return (p[p.length-1] || '???').slice(0,3).toUpperCase(); };
+const code = d => {
+  if(d.short_code) return d.short_code.toUpperCase();
+  const p = d.name.trim().split(/\s+/); return (p[p.length-1] || '???').slice(0,3).toUpperCase();
+};
 const shortGp = t => t.gp_name.replace(' Grand Prix', ' GP');
 const flag = (t,w=40) => `https://flagcdn.com/w${w}/${t.country_code}.png`;
 const flagImg = t => `<img src="${flag(t)}" alt="" width="24" height="18" loading="lazy" onerror="this.style.visibility='hidden'">`;
@@ -698,6 +701,7 @@ function drvRow(d){
   const isNew = !d;
   return `<div class="drv ${isNew?'new':''}" data-id="${d ? d.id : ''}">
     <input class="in" name="name" value="${esc(d ? d.name : '')}" placeholder="${isNew ? 'New driver name' : 'Name'}" aria-label="Driver name">
+    <input class="in" name="code" maxlength="4" value="${esc(d ? (d.short_code || '') : '')}" placeholder="Code" aria-label="Short code, 2 to 4 letters">
     <input class="in" name="num" type="number" min="1" max="99" value="${d ? d.driver_number : ''}" placeholder="No." aria-label="Driver number">
     <input class="in" name="color" type="color" value="${esc(d ? d.color : '#888888')}" aria-label="Team color">
     ${isNew ? '<span></span>' : `<label class="act"><input type="checkbox" name="active" ${d.active?'checked':''}> Active</label>`}
@@ -715,14 +719,16 @@ $('#drvList').addEventListener('click', async e => {
   const name = row.querySelector('[name=name]').value.trim();
   const num = +row.querySelector('[name=num]').value;
   const color = row.querySelector('[name=color]').value;
+  const scode = row.querySelector('[name=code]').value.trim().toUpperCase();
   const active = row.querySelector('[name=active]') ? row.querySelector('[name=active]').checked : true;
   const err = $('#drvErr'); err.textContent = '';
   if(!name){ err.textContent = 'Enter a name.'; return; }
   if(!(num >= 1 && num <= 99)){ err.textContent = 'Driver number must be between 1 and 99.'; return; }
+  if(!/^[A-Z]{2,4}$/.test(scode)){ err.textContent = 'Short code must be 2 to 4 letters.'; return; }
   b.disabled = true;
   try{
-    if(id) await withPass(p => rpc('update_driver', { p_passcode:p, p_driver_id:id, p_name:name, p_number:num, p_color:color, p_active:active }));
-    else await withPass(p => rpc('add_driver', { p_passcode:p, p_name:name, p_number:num, p_color:color }));
+    if(id) await withPass(p => rpc('update_driver', { p_passcode:p, p_driver_id:id, p_name:name, p_number:num, p_color:color, p_active:active, p_code:scode }));
+    else await withPass(p => rpc('add_driver', { p_passcode:p, p_name:name, p_number:num, p_color:color, p_code:scode }));
     await load(); renderDrivers(); toast(id ? 'Driver saved' : `${name} joined the league`);
   }catch(ex){ err.textContent = `Could not save: ${ex.message || 'try again'}`; }
   b.disabled = false;
