@@ -134,15 +134,20 @@ section{margin-top:44px}
   0%{transform:rotate(0)}12%{transform:rotate(-24deg)}28%{transform:rotate(18deg)}44%{transform:rotate(-11deg)}
   60%{transform:rotate(7deg)}76%{transform:rotate(-3deg)}100%{transform:rotate(0)}
 }
-.step{width:100%;display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 8px 14px;text-align:center;background:var(--panel);border-top:6px solid var(--c)}
-.p1 .step{min-height:156px}.p2 .step{min-height:122px}.p3 .step{min-height:100px}
-.step .place{font:italic 800 46px/1 var(--display)}
-.p1 .step .place{font-size:60px}
-.step b{max-width:100%;font-weight:700;font-size:15px;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.step .w{font:800 24px/1.1 var(--display)}
-.step .w small{font:600 13px var(--body);color:var(--mute)}
-.step .g{font-size:12px;color:var(--mute)}
-.step .tag{margin-top:4px}
+/* Risers have fixed heights (1st > 2nd > 3rd) and hold only the place number,
+   so text can never stretch one taller than another. Names and wins sit below. */
+.riser{width:100%;display:grid;place-items:center;background:var(--panel);border-top:6px solid var(--c)}
+.p1 .riser{height:124px}.p2 .riser{height:92px}.p3 .riser{height:64px}
+.riser .place{font:italic 800 44px/1 var(--display)}
+.p1 .riser .place{font-size:60px}
+.podinfo{display:grid;grid-template-columns:1fr 1.12fr 1fr;gap:10px;align-items:start}
+.pinfo{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:0;padding:10px 4px 0;text-align:center}
+.pinfo.p1{order:2}.pinfo.p2{order:1}.pinfo.p3{order:3}
+.pinfo b{max-width:100%;font-weight:700;font-size:15px;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pinfo .w{font:800 24px/1.1 var(--display)}
+.pinfo .w small{font:600 13px var(--body);color:var(--mute)}
+.pinfo .g{font-size:12px;color:var(--mute)}
+.pinfo .tag{margin-top:4px}
 .others{margin-top:10px}
 .orow{display:flex;align-items:center;gap:12px;padding:8px 12px;background:var(--panel);border-left:4px solid var(--c)}
 .orow + .orow{margin-top:4px}
@@ -277,11 +282,11 @@ fieldset.field{border:0;padding:0;margin:0 0 14px;min-width:0}
   .podium{gap:6px}
   .bob{--hs:62px;--bw:86px}
   .p1 .bob{--hs:72px;--bw:96px}
-  .step{padding:8px 4px 12px}
-  .step b{font-size:13px}
-  .step .place{font-size:36px}.p1 .step .place{font-size:46px}
-  .p1 .step{min-height:132px}.p2 .step{min-height:106px}.p3 .step{min-height:88px}
-  .step .tag{font-size:10px;padding:0 5px}
+  .podinfo{gap:6px}
+  .pinfo b{font-size:13px}
+  .riser .place{font-size:34px}.p1 .riser .place{font-size:44px}
+  .p1 .riser{height:100px}.p2 .riser{height:74px}.p3 .riser{height:52px}
+  .pinfo .tag{font-size:10px;padding:0 5px}
   .tracks{grid-template-columns:repeat(2,minmax(0,1fr))}
   .stat{padding:14px 10px}.stat .v{font-size:30px}
   .lr{grid-template-columns:40px minmax(0,1fr) 40px;grid-template-areas:"n trk ed" ". win ed" ". meta ed";gap:4px 10px}
@@ -599,26 +604,30 @@ function renderPodium(c){
   const total = c.races.length;
   const leadWins = c.wins.get(c.order[0].id);
   const places = ['1st','2nd','3rd'];
-  const pods = c.order.slice(0,3).map((d,i) => {
+  const top3 = c.order.slice(0,3);
+  const pods = top3.map((d,i) => {
+    const w = c.wins.get(d.id);
+    return `<div class="pod p${i+1}" style="--c:${esc(dc(d))}" role="group" aria-label="${places[i]}: ${esc(d.name)}, ${w} ${plural(w,'win','wins')}">
+      ${bobble(d, i)}
+      <div class="riser" aria-hidden="true"><span class="place">${i+1}</span></div>
+    </div>`;
+  }).join('');
+  const infos = top3.map((d,i) => {
     const w = c.wins.get(d.id);
     const gap = !total ? '' : i === 0 ? 'Leader' : w === leadWins ? 'Level' : `${leadWins - w} behind`;
     const lastWin = c.last && c.last.winner_id === d.id;
-    return `<div class="pod p${i+1}" style="--c:${esc(dc(d))}" role="group" aria-label="${places[i]}: ${esc(d.name)}, ${w} ${plural(w,'win','wins')}">
-      ${bobble(d, i)}
-      <div class="step">
-        <span class="place">${i+1}</span>
-        <b>${esc(d.name)}</b>
-        <span class="w">${w} <small>${plural(w,'win','wins')}</small></span>
-        ${gap ? `<span class="g">${gap}</span>` : ''}
-        ${lastWin ? '<span class="tag">Won last race</span>' : ''}
-      </div>
+    return `<div class="pinfo p${i+1}" aria-hidden="true">
+      <b>${esc(d.name)}</b>
+      <span class="w">${w} <small>${plural(w,'win','wins')}</small></span>
+      ${gap ? `<span class="g">${gap}</span>` : ''}
+      ${lastWin ? '<span class="tag">Won last race</span>' : ''}
     </div>`;
   }).join('');
   const rest = c.order.slice(3).map((d,k) => {
     const w = c.wins.get(d.id);
     return `<div class="orow" style="--c:${esc(dc(d))}"><span class="pl">${k+4}</span>${avatar(d,'sm')}<b>${esc(d.name)}</b><span class="w">${w}</span></div>`;
   }).join('');
-  box.innerHTML = `<div class="podium">${pods}</div>${rest ? `<div class="others">${rest}</div>` : ''}`;
+  box.innerHTML = `<div class="podium">${pods}</div><div class="podinfo">${infos}</div>${rest ? `<div class="others">${rest}</div>` : ''}`;
   /* first time the podium appears: every head gets a staggered wobble */
   if(!podiumShown && !reduceMotion){
     podiumShown = true;
