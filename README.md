@@ -27,6 +27,14 @@ Browsers remember the passcode after the first unlock. If you change it, people 
 - **Fix a mistake:** click Edit on any row in the race log, then change it or delete it.
 - **Driver changes:** Manage drivers lets you edit names, 2 to 4 letter short codes (RJ, JAI, VIJ), numbers and colors, and add the 4th player when they join.
 
+## What's on the page
+
+- **Next race:** the first track on the 2026 calendar with no result logged yet. Log a result and the card moves on to the next unraced track, skipping any you've already done. Log this race opens the form with that track selected.
+- **Light and dark mode:** follows the device setting by default. The toggle in the toolbar overrides it and is remembered on that device. Jai's black color shows as white in dark mode and black in light mode (any near-black or near-white driver color flips the same way).
+- **Wins over time:** the x axis shows a flag and track name for each race. Hover a race column for the winner.
+- **Photos:** driver photos are in `img/` (`rohan.jpg`, `jai.jpg`, `bhavya.jpg`) and the header banner is `img/group.jpg`. The repo is public, so anyone with the link can see these.
+- **Adding a photo for a new driver:** put the image in `img/`, then in the Supabase SQL editor run `update public.drivers set photo = 'img/name.jpg' where name = 'Driver Name';`. Until then they show their initials.
+
 ## Notes
 
 - The Supabase URL and anon key inside `index.html` are meant to be public. Safety comes from row-level security: the public can only read, and every write goes through a function that checks the passcode.

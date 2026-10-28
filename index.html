@@ -1,11 +1,24 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>F1 26 League · 2026 Season 1</title>
 <meta name="description" content="Win tally for our F1 26 online league, 2026 Season 1.">
 <meta name="theme-color" content="#0c0c0f">
+<script>
+/* Set the theme before first paint: saved choice, else the device setting. */
+(function(){
+  var t = null;
+  try { t = localStorage.getItem('f1l_theme'); } catch(e) {}
+  if (t !== 'light' && t !== 'dark') {
+    t = (window.matchMedia && matchMedia('(prefers-color-scheme: light)').matches) ? 'light' : 'dark';
+  }
+  document.documentElement.setAttribute('data-theme', t);
+  var m = document.querySelector('meta[name=theme-color]');
+  if (m) m.setAttribute('content', t === 'light' ? '#eeeef2' : '#0c0c0f');
+})();
+</script>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23fff'/%3E%3Crect width='8' height='8' fill='%23000'/%3E%3Crect x='16' width='8' height='8' fill='%23000'/%3E%3Crect x='8' y='8' width='8' height='8' fill='%23000'/%3E%3Crect x='24' y='8' width='8' height='8' fill='%23000'/%3E%3Crect y='16' width='8' height='8' fill='%23000'/%3E%3Crect x='16' y='16' width='8' height='8' fill='%23000'/%3E%3Crect x='8' y='24' width='8' height='8' fill='%23000'/%3E%3Crect x='24' y='24' width='8' height='8' fill='%23000'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,47 +26,65 @@
 <style>
 :root{
   color-scheme:dark;
-  --carbon:#0c0c0f; --panel:#16161b; --panel-2:#1f1f27; --line:#2d2d38;
-  --ink:#f3f3f6; --mute:#9d9dad; --red:#e10600; --purple:#b845e8; --green:#2ee08a;
+  --bg:#0c0c0f; --panel:#16161b; --panel-2:#1f1f27; --line:#2d2d38; --line-2:#2a2a34;
+  --ink:#f3f3f6; --mute:#9d9dad; --field:#0f0f13; --hover:#2a2a34; --lead:#262630;
+  --pos-bg:#fff; --pos-ink:#000; --cta-bg:#fff; --cta-ink:#000; --cta-hover:#e6e6ea;
+  --pattern:rgba(255,255,255,.02); --ring:rgba(255,255,255,.35); --danger:#ff6b63;
+  --purple:#b845e8; --green:#2ee08a; --red:#e10600;
   --display:'Barlow Condensed','Arial Narrow',Impact,sans-serif;
   --body:'Titillium Web',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+:root[data-theme="light"]{
+  color-scheme:light;
+  --bg:#eeeef2; --panel:#ffffff; --panel-2:#f0f0f4; --line:#d8d8e1; --line-2:#dcdce4;
+  --ink:#14141a; --mute:#5b5b6c; --field:#f7f7fa; --hover:#e4e4eb; --lead:#e8e8f0;
+  --pos-bg:#14141a; --pos-ink:#fff; --cta-bg:#14141a; --cta-ink:#fff; --cta-hover:#2c2c36;
+  --pattern:rgba(0,0,0,.025); --ring:rgba(0,0,0,.3); --danger:#c4271d;
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{
-  margin:0;background-color:var(--carbon);color:var(--ink);font:400 16px/1.5 var(--body);
+  margin:0;background-color:var(--bg);color:var(--ink);font:400 16px/1.5 var(--body);
   background-image:
-    repeating-linear-gradient(45deg,rgba(255,255,255,.02) 0 2px,transparent 2px 6px),
-    repeating-linear-gradient(-45deg,rgba(255,255,255,.02) 0 2px,transparent 2px 6px);
+    repeating-linear-gradient(45deg,var(--pattern) 0 2px,transparent 2px 6px),
+    repeating-linear-gradient(-45deg,var(--pattern) 0 2px,transparent 2px 6px);
   min-height:100vh;
 }
 img{display:block}
 [hidden]{display:none!important}
 button,input,select{font:inherit;color:inherit}
-:focus-visible{outline:2px solid #fff;outline-offset:2px}
+:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 .wrap{max-width:1120px;margin:0 auto;padding:0 16px}
-.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 
 /* ---------- header ---------- */
 .stripe{height:4px;background:var(--red)}
 .checker{height:10px;background:conic-gradient(#fff 25%,#000 0 50%,#fff 0 75%,#000 0) 0 0/20px 20px;opacity:.9}
-.top .bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px 24px;padding-top:18px;padding-bottom:18px}
-.brand h1{margin:0;font:italic 800 clamp(34px,6vw,56px)/.95 var(--display);letter-spacing:.005em}
-.brand p{margin:6px 0 0;color:var(--mute);font-size:14px}
+.banner{
+  position:relative;display:flex;align-items:flex-end;color:#fff;min-height:clamp(210px,31vw,330px);
+  background:
+    linear-gradient(90deg,rgba(6,6,8,.9) 0%,rgba(6,6,8,.55) 40%,rgba(6,6,8,.05) 78%),
+    linear-gradient(0deg,rgba(6,6,8,.6),transparent 50%),
+    url(img/group.jpg) center 42%/cover #111;
+}
+.banner .wrap{width:100%;padding-top:24px;padding-bottom:22px}
+.banner h1{margin:0;font:italic 800 clamp(38px,7vw,68px)/.95 var(--display);letter-spacing:.005em}
+.banner p{margin:8px 0 0;color:#dcdce6;font-size:14px;max-width:34em}
+.toolbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 16px;padding-top:12px;padding-bottom:12px}
 .actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
-.live{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--mute);margin-right:6px}
-.live i{width:9px;height:9px;border-radius:50%;background:#555}
+.live{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--mute)}
+.live i{width:9px;height:9px;border-radius:50%;background:#777}
 .live.on i{background:var(--green);box-shadow:0 0 0 0 rgba(46,224,138,.6);animation:pulse 2s infinite}
 @keyframes pulse{70%{box-shadow:0 0 0 8px rgba(46,224,138,0)}100%{box-shadow:0 0 0 0 rgba(46,224,138,0)}}
 
 .btn{display:inline-flex;align-items:center;gap:8px;min-height:42px;padding:8px 16px;background:var(--panel-2);border:1px solid var(--line);border-radius:4px;cursor:pointer;font-weight:600;transition:background .15s,border-color .15s}
-.btn:hover{background:#2a2a34;border-color:#454554}
-.btn.primary{background:#fff;color:#000;border-color:#fff;font-weight:700}
-.btn.primary:hover{background:#e6e6ea}
-.btn.danger{color:#ff6b63;border-color:#5a2824}
-.btn.danger.armed{background:#ff3b30;color:#fff;border-color:#ff3b30}
+.btn:hover{background:var(--hover)}
+.btn svg{width:18px;height:18px;flex:none}
+.btn.primary{background:var(--cta-bg);color:var(--cta-ink);border-color:var(--cta-bg);font-weight:700}
+.btn.primary:hover{background:var(--cta-hover)}
+.btn.danger{color:var(--danger);border-color:var(--line)}
+.btn.danger.armed{background:#e5382d;color:#fff;border-color:#e5382d}
 .btn.ghost{background:transparent;border-color:transparent;color:var(--mute);min-height:34px;padding:4px 10px;font-weight:600;font-size:14px}
-.btn.ghost:hover{color:#fff;background:var(--panel-2)}
+.btn.ghost:hover{color:var(--ink);background:var(--panel-2)}
 .btn[disabled]{opacity:.5;cursor:default}
 
 /* ---------- sections ---------- */
@@ -64,42 +95,64 @@ section{margin-top:44px}
 .head p{margin:0;color:var(--mute);font-size:14px}
 .empty{margin:0;padding:28px 18px;background:var(--panel);border:1px dashed var(--line);color:var(--mute);border-radius:4px}
 
-/* ---------- hero: tower + last race ---------- */
-.hero{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:28px;align-items:start;margin-top:28px}
+/* ---------- hero: standings + next race + last race ---------- */
+.hero{
+  display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:28px;align-items:start;margin-top:28px;
+  grid-template-areas:"stand next" "stand last";
+}
+.hero > section{margin-top:0}
+.a-stand{grid-area:stand}.a-next{grid-area:next}.a-last{grid-area:last}
+
 .row{
-  display:grid;grid-template-columns:48px 6px 62px minmax(0,1fr) 54px 56px;align-items:center;gap:0 14px;
-  height:66px;padding-right:22px;background:var(--panel);position:relative;
+  display:grid;grid-template-columns:48px 6px 48px 58px minmax(0,1fr) 54px 56px;align-items:center;gap:0 12px;
+  height:68px;padding-right:22px;background:var(--panel);position:relative;
   clip-path:polygon(0 0,100% 0,calc(100% - 14px) 100%,0 100%);
 }
 .row + .row{margin-top:4px}
-.row.lead{background:linear-gradient(90deg,#262630,var(--panel) 70%)}
-.pos{align-self:stretch;display:grid;place-items:center;background:#fff;color:#000;font:800 28px/1 var(--display)}
-.livery{width:6px;height:44px;background:var(--c);box-shadow:0 0 0 1px rgba(255,255,255,.35)}
+.row.lead{background:linear-gradient(90deg,var(--lead),var(--panel) 70%)}
+.pos{align-self:stretch;display:grid;place-items:center;background:var(--pos-bg);color:var(--pos-ink);font:800 28px/1 var(--display)}
+.livery{width:6px;height:44px;background:var(--c);box-shadow:0 0 0 1px var(--ring)}
 .code{font:800 30px/1 var(--display);letter-spacing:.03em}
 .who{min-width:0}
 .who b{display:flex;align-items:center;gap:8px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .who .no{font:700 14px/1 var(--display);color:var(--mute);letter-spacing:.04em}
-.who .share{display:block;height:3px;margin-top:7px;background:#2a2a34}
-.who .share i{display:block;height:100%;background:var(--c);filter:brightness(1.25)}
-.tag{display:inline-block;padding:1px 7px;font:700 11px/16px var(--body);background:var(--purple);color:#fff;border-radius:2px;letter-spacing:.02em}
+.who .share{display:block;height:3px;margin-top:7px;background:var(--line-2)}
+.who .share i{display:block;height:100%;background:var(--c)}
+.tag{display:inline-block;padding:1px 7px;font:700 11px/16px var(--body);background:var(--purple);color:#fff;border-radius:2px;letter-spacing:.02em;white-space:nowrap}
+.tag.go{background:var(--cta-bg);color:var(--cta-ink);margin-left:auto}
 .wins{font:800 40px/1 var(--display);text-align:right}
 .gap{font-size:14px;color:var(--mute);text-align:right;font-variant-numeric:tabular-nums}
 .tower-note{margin:10px 0 0;color:var(--mute);font-size:13px}
 
-.last{position:relative;min-height:290px;overflow:hidden;background:var(--panel);border:1px solid var(--line);display:flex;flex-direction:column;justify-content:flex-end}
+/* driver photo */
+.av{
+  position:relative;flex:none;width:48px;height:48px;border-radius:50%;overflow:hidden;display:grid;place-items:center;
+  background:var(--panel-2);color:var(--mute);font:800 16px/1 var(--display);box-shadow:0 0 0 2px var(--c,var(--line));
+}
+.av img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.av.sm{width:30px;height:30px;font-size:12px}
+
+/* image cards: next race + last race (text stays light on a dark overlay in both themes) */
+.last{position:relative;min-height:180px;overflow:hidden;background:#15151a;border:1px solid var(--line);display:flex;flex-direction:column;justify-content:flex-end;color:#fff}
+.last.next{min-height:270px}
 .last .flagbg{position:absolute;inset:0;background-size:cover;background-position:center;opacity:.55;filter:saturate(1.1)}
-.last::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(12,12,15,.1) 0%,rgba(12,12,15,.55) 45%,rgba(12,12,15,.96) 100%)}
-.last .body{position:relative;z-index:1;padding:22px 20px 20px}
+.last::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,10,13,.1) 0%,rgba(10,10,13,.55) 45%,rgba(10,10,13,.96) 100%)}
+.last .body{position:relative;z-index:1;padding:20px}
 .last .when{margin:0 0 6px;font-size:13px;color:#d6d6e0}
 .last h3{margin:0;font:800 clamp(30px,4vw,40px)/1 var(--display)}
-.last .circuit{margin:4px 0 16px;color:#cfcfda;font-size:14px}
+.last .circuit{margin:4px 0 14px;color:#cfcfda;font-size:14px}
+.last .then{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;margin:0 0 16px;font-size:13px;color:#d6d6e0}
+.last .then span{display:inline-flex;align-items:center;gap:6px}
+.last .then img{width:18px;height:13px;object-fit:cover;border-radius:2px}
 .last .winner{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px}
-.last .winner .livery{height:28px}
-.last.blank{justify-content:center;align-items:center;text-align:center;color:var(--mute)}
+.last .av{box-shadow:0 0 0 2px var(--c),0 0 0 3px rgba(255,255,255,.5)}
+.last .btn.primary{background:#fff;color:#000;border-color:#fff}
+.last .btn.primary:hover{background:#e6e6ea}
+.last.blank{justify-content:center;align-items:center;text-align:center;color:var(--mute);background:var(--panel)}
 .last.blank::after{display:none}
 
 /* ---------- stat strip ---------- */
-.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin-top:28px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin-top:22px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
 .stat{padding:16px 18px}
 .stat + .stat{border-left:1px solid var(--line)}
 .stat .v{font:800 38px/1 var(--display)}
@@ -110,6 +163,8 @@ section{margin-top:44px}
 .chartbox{background:var(--panel);border:1px solid var(--line);padding:14px 10px 8px}
 #chart svg{display:block;width:100%;height:auto;overflow:visible}
 #chart text{font-family:var(--body)}
+#chart .ax{fill:var(--mute);font-size:11px}
+#chart .gl{stroke:var(--line);stroke-width:1}
 .legend{display:flex;flex-wrap:wrap;gap:6px 18px;padding:6px 10px 4px;color:var(--mute);font-size:13px}
 .legend span{display:inline-flex;align-items:center;gap:7px}
 .legend i{width:14px;height:4px;background:var(--c)}
@@ -117,25 +172,25 @@ section{margin-top:44px}
 /* ---------- tracks ---------- */
 .tracks{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px}
 .tile{display:flex;flex-direction:column;gap:8px;min-height:92px;padding:11px 12px;background:var(--panel);border-left:4px solid var(--line)}
-.tile.off{background:transparent;border:1px dashed #2a2a33;border-left:4px solid #2a2a33;opacity:.55}
+.tile.off{background:transparent;border:1px dashed var(--line);border-left:4px solid var(--line);opacity:.6}
+.tile.off.next{opacity:1;background:var(--panel);border:1px solid var(--ink);border-left:4px solid var(--ink)}
 .tile .t{display:flex;align-items:center;gap:9px;min-width:0}
 .tile .t img{width:24px;height:18px;object-fit:cover;flex:none;border-radius:2px}
 .tile .t b{font-weight:700;font-size:15px;line-height:1.2}
 .tile .c{font-size:12px;color:var(--mute);line-height:1.3}
 .dots{display:flex;flex-wrap:wrap;gap:5px;margin-top:auto}
-.dots i{width:12px;height:12px;border-radius:50%;background:var(--c);box-shadow:0 0 0 1px rgba(255,255,255,.4)}
+.dots i{width:12px;height:12px;border-radius:50%;background:var(--c);box-shadow:0 0 0 1px var(--ring)}
 
 /* ---------- race log ---------- */
 .log{background:var(--panel);border:1px solid var(--line)}
-.lr{display:grid;grid-template-columns:56px minmax(0,1.4fr) minmax(0,1fr) 70px 92px 44px;align-items:center;gap:0 12px;padding:11px 14px;border-top:1px solid var(--line)}
+.lr{display:grid;grid-template-columns:56px minmax(0,1.4fr) minmax(0,1fr) 70px 92px 44px;align-items:center;gap:0 12px;padding:10px 14px;border-top:1px solid var(--line)}
 .lr:first-child{border-top:0}
 .lr .n{font:800 22px/1 var(--display);color:var(--mute)}
 .lr .trk{display:flex;align-items:center;gap:10px;min-width:0}
 .lr .trk img{width:24px;height:18px;object-fit:cover;flex:none;border-radius:2px}
 .lr .trk b{display:block;font-weight:600;line-height:1.2}
 .lr .trk small{display:block;color:var(--mute);font-size:12px;line-height:1.2}
-.lr .win{display:flex;align-items:center;gap:9px;font-weight:600}
-.lr .win .livery{height:22px;width:5px}
+.lr .win{display:flex;align-items:center;gap:10px;font-weight:600}
 .lr .meta{color:var(--mute);font-size:14px}
 .lr .ed{justify-self:end}
 .lr.hd{font-size:12px;color:var(--mute);padding-top:9px;padding-bottom:9px;background:var(--panel-2)}
@@ -145,25 +200,26 @@ footer p{margin:0;padding:16px;color:var(--mute);font-size:13px;text-align:cente
 
 /* ---------- dialogs ---------- */
 dialog{padding:0;border:1px solid var(--line);border-radius:6px;background:var(--panel);color:var(--ink);width:min(480px,calc(100vw - 24px));max-height:calc(100dvh - 24px)}
-dialog.wide{width:min(640px,calc(100vw - 24px))}
-dialog::backdrop{background:rgba(0,0,0,.72)}
+dialog.wide{width:min(660px,calc(100vw - 24px))}
+dialog::backdrop{background:rgba(0,0,0,.65)}
 .dlg{padding:20px}
 .dlg h3{margin:0 0 4px;font:700 28px/1.1 var(--display)}
 .dlg > p.sub{margin:0 0 16px;color:var(--mute);font-size:14px}
 .field{display:block;margin-bottom:14px}
-.field > span,.field > legend{display:block;margin-bottom:6px;font-size:13px;font-weight:600;color:#c9c9d6;padding:0}
+.field > span,.field > legend{display:block;margin-bottom:6px;font-size:13px;font-weight:600;color:var(--mute);padding:0}
 fieldset.field{border:0;padding:0;margin:0 0 14px;min-width:0}
-.in{width:100%;min-height:44px;padding:9px 12px;background:#0f0f13;border:1px solid var(--line);border-radius:4px}
-.in:focus-visible{outline-offset:0;border-color:#fff}
+.in{width:100%;min-height:44px;padding:9px 12px;background:var(--field);border:1px solid var(--line);border-radius:4px}
+.in:focus-visible{outline-offset:0;border-color:var(--ink)}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
 .chip{position:relative}
 .chip input{position:absolute;opacity:0;inset:0;cursor:pointer;margin:0}
-.chip span{display:flex;align-items:center;gap:9px;min-height:44px;padding:8px 14px 8px 10px;background:#0f0f13;border:1px solid var(--line);border-radius:4px;font-weight:600}
-.chip span::before{content:"";width:6px;height:24px;background:var(--c);box-shadow:0 0 0 1px rgba(255,255,255,.35)}
-.chip input:checked + span{background:#fff;color:#000;border-color:#fff}
-.chip input:focus-visible + span{outline:2px solid #fff;outline-offset:2px}
-.err{min-height:20px;margin:0 0 10px;color:#ff7a72;font-size:14px}
+.chip span{display:flex;align-items:center;gap:9px;min-height:44px;padding:8px 14px 8px 10px;background:var(--field);border:1px solid var(--line);border-radius:4px;font-weight:600}
+.chip span::before{content:"";width:6px;height:24px;background:var(--c);box-shadow:0 0 0 1px var(--ring)}
+.chip input:checked + span{background:var(--cta-bg);color:var(--cta-ink);border-color:var(--cta-bg)}
+.chip input:checked + span::before{box-shadow:0 0 0 1px rgba(128,128,128,.7)}
+.chip input:focus-visible + span{outline:2px solid var(--ink);outline-offset:2px}
+.err{min-height:20px;margin:0 0 10px;color:var(--danger);font-size:14px}
 .dlg .acts{display:flex;flex-wrap:wrap;gap:10px;justify-content:flex-end;align-items:center}
 .dlg .acts .spacer{margin-right:auto}
 .drv{display:grid;grid-template-columns:minmax(0,1fr) 70px 70px 52px auto auto;gap:8px;align-items:center;margin-bottom:10px}
@@ -173,24 +229,26 @@ fieldset.field{border:0;padding:0;margin:0 0 14px;min-width:0}
 .drv.new{padding-top:12px;margin-top:6px;border-top:1px solid var(--line)}
 
 .toasts{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);display:flex;flex-direction:column;gap:8px;z-index:50;width:min(460px,calc(100vw - 24px));pointer-events:none}
-.toast{padding:12px 16px;background:#fff;color:#000;border-left:6px solid var(--purple);font-weight:600;box-shadow:0 8px 30px rgba(0,0,0,.5);animation:rise .25s ease-out}
+.toast{padding:12px 16px;background:var(--cta-bg);color:var(--cta-ink);border-left:6px solid var(--purple);font-weight:600;box-shadow:0 8px 30px rgba(0,0,0,.4);animation:rise .25s ease-out}
 @keyframes rise{from{transform:translateY(12px);opacity:0}}
 
 /* ---------- start lights ---------- */
-.boot{position:fixed;inset:0;z-index:100;background:var(--carbon);display:grid;place-items:center;transition:opacity .35s}
+.boot{position:fixed;inset:0;z-index:100;background:#0c0c0f;display:grid;place-items:center;transition:opacity .35s}
 .boot.gone{opacity:0;pointer-events:none}
-.gantry{display:flex;gap:clamp(8px,2.4vw,18px);padding:18px 22px;background:#050507;border:1px solid var(--line);border-radius:10px}
+.gantry{display:flex;gap:clamp(8px,2.4vw,18px);padding:18px 22px;background:#050507;border:1px solid #2d2d38;border-radius:10px}
 .gantry i{width:clamp(30px,8vw,52px);height:clamp(30px,8vw,52px);border-radius:50%;background:#2a0b0b;box-shadow:inset 0 0 0 3px #190606}
 .gantry i.on{background:var(--red);box-shadow:0 0 28px rgba(225,6,0,.75),inset 0 0 0 3px #ff5a52}
 
 /* ---------- small screens ---------- */
 @media (max-width:860px){
-  .hero{grid-template-columns:1fr;gap:22px}
-  .last{min-height:230px}
+  .hero{grid-template-columns:1fr;gap:22px;grid-template-areas:"next" "stand" "last"}
+  .last.next{min-height:240px}
 }
 @media (max-width:620px){
-  .row{grid-template-columns:40px 5px minmax(0,1fr) 44px 48px;gap:0 10px;height:62px;padding-right:18px}
+  .row{grid-template-columns:40px 5px 40px minmax(0,1fr) 44px 48px;gap:0 10px;height:64px;padding-right:18px}
   .row .code,.who .no{display:none}
+  .who b{flex-wrap:wrap;gap:2px 8px;white-space:normal;overflow:visible}
+  .row .av{width:40px;height:40px}
   .tracks{grid-template-columns:repeat(2,minmax(0,1fr))}
   .wins{font-size:34px}
   .stat{padding:14px 10px}.stat .v{font-size:30px}
@@ -198,8 +256,7 @@ fieldset.field{border:0;padding:0;margin:0 0 14px;min-width:0}
   .lr.hd{display:none}
   .lr .n{grid-area:n}.lr .trk{grid-area:trk}.lr .win{grid-area:win}.lr .ed{grid-area:ed}
   .lr .meta{grid-area:meta}.lr .meta.lob{display:none}
-  .drv{grid-template-columns:minmax(0,1fr) 64px 64px 48px;}
-  .drv .act,.drv .btn{grid-column:span 1}
+  .drv{grid-template-columns:minmax(0,1fr) 64px 64px 48px}
   .two{grid-template-columns:1fr}
 }
 @media (prefers-reduced-motion:reduce){
@@ -213,39 +270,46 @@ fieldset.field{border:0;padding:0;margin:0 0 14px;min-width:0}
 
 <header class="top">
   <div class="stripe"></div>
-  <div class="wrap bar">
-    <div class="brand">
+  <div class="banner" role="img" aria-label="Group photo of the three drivers with a Mustang in front of a roller coaster">
+    <div class="wrap">
       <h1>2026 Season 1</h1>
-      <p>F1 26 online league · every round of the 2026 calendar, in random order</p>
+      <p>F1 26 online league · every round of the 2026 calendar</p>
     </div>
+  </div>
+  <div class="checker"></div>
+  <div class="wrap toolbar">
+    <span class="live" id="live"><i></i><span id="liveTxt">Connecting</span></span>
     <div class="actions">
-      <span class="live" id="live"><i></i><span id="liveTxt">Connecting</span></span>
+      <button class="btn" id="themeBtn" type="button"><span id="themeIcon" aria-hidden="true"></span><span id="themeTxt">Light mode</span></button>
       <button class="btn" id="lockBtn" type="button">Unlock editing</button>
       <button class="btn primary" id="addBtn" type="button">Log a race</button>
     </div>
   </div>
-  <div class="checker"></div>
 </header>
 
 <main class="wrap">
 
   <div class="hero">
-    <section style="margin-top:0" aria-labelledby="h-stand">
+    <section class="a-stand" aria-labelledby="h-stand">
       <div class="head">
         <h2 id="h-stand">Standings</h2>
         <p id="standSub">Race wins only</p>
       </div>
       <div id="tower"><p class="empty">Loading standings…</p></div>
       <p class="tower-note"><button class="btn ghost" id="drvBtn" type="button">Manage drivers</button></p>
+      <div class="stats" id="stats" aria-label="Season stats"></div>
     </section>
 
-    <section style="margin-top:0" aria-labelledby="h-last">
+    <section class="a-next" aria-labelledby="h-next">
+      <div class="head"><h2 id="h-next">Next race</h2><p id="nextSub"></p></div>
+      <div id="next" class="last next blank"><p>Loading…</p></div>
+    </section>
+
+    <section class="a-last" aria-labelledby="h-last">
       <div class="head"><h2 id="h-last">Last race</h2></div>
       <div id="last" class="last blank"><p>Waiting for data…</p></div>
     </section>
   </div>
-
-  <div class="stats" id="stats" aria-label="Season stats"></div>
 
   <section aria-labelledby="h-chart">
     <div class="head"><h2 id="h-chart">Wins over time</h2><p>Cumulative wins after each race</p></div>
@@ -341,8 +405,26 @@ const ss = {
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 const sb = window.supabase.createClient(SB_URL, SB_KEY);
-const S = { drivers:[], tracks:[], races:[], pass: ls.get('f1l_pass'), C:null };
+const S = { drivers:[], tracks:[], races:[], pass: ls.get('f1l_pass'), C:null, nextId:null };
 const mine = new Set();
+
+/* ---------- theme ---------- */
+const theme = () => document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+const ICON_SUN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
+const ICON_MOON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>';
+function applyTheme(t, save){
+  document.documentElement.setAttribute('data-theme', t);
+  const m = document.querySelector('meta[name=theme-color]');
+  if(m) m.setAttribute('content', t === 'light' ? '#eeeef2' : '#0c0c0f');
+  if(save) ls.set('f1l_theme', t);
+  if(S.C) render(); else renderChrome();
+}
+$('#themeBtn').addEventListener('click', () => applyTheme(theme() === 'light' ? 'dark' : 'light', true));
+try{
+  matchMedia('(prefers-color-scheme: light)').addEventListener('change', e => {
+    if(!ls.get('f1l_theme')) applyTheme(e.matches ? 'light' : 'dark', false);
+  });
+}catch{}
 
 /* ---------- helpers ---------- */
 function lum(hex){
@@ -351,14 +433,23 @@ function lum(hex){
   const [r,g,b] = [1,2,3].map(i => parseInt(m[i],16)/255);
   return .2126*r + .7152*g + .0722*b;
 }
-const vivid = d => lum(d.color) < .12 ? '#d8d8e0' : d.color;
+/* Display color for the current theme: near-black drivers turn white on dark, black on light. */
+const dc = d => {
+  const L = lum(d.color), light = theme() === 'light';
+  if(L < .12) return light ? '#0b0b0b' : '#f2f2f5';
+  if(L > .88) return light ? '#111114' : d.color;
+  return d.color;
+};
 const code = d => {
   if(d.short_code) return d.short_code.toUpperCase();
   const p = d.name.trim().split(/\s+/); return (p[p.length-1] || '???').slice(0,3).toUpperCase();
 };
+const initials = d => d.name.trim().split(/\s+/).map(w => w[0]).join('').slice(0,2).toUpperCase();
 const shortGp = t => t.gp_name.replace(' Grand Prix', ' GP');
+const shortName = t => t.gp_name.replace(' Grand Prix', '');
 const flag = (t,w=40) => `https://flagcdn.com/w${w}/${t.country_code}.png`;
 const flagImg = t => `<img src="${flag(t)}" alt="" width="24" height="18" loading="lazy" onerror="this.style.visibility='hidden'">`;
+const avatar = (d, cls='') => `<span class="av ${cls}" style="--c:${esc(dc(d))}">${esc(initials(d))}${d.photo ? `<img src="${esc(d.photo)}" alt="" loading="lazy" onerror="this.remove()">` : ''}</span>`;
 const fmtDate = s => { const [y,m,d] = String(s).split('-').map(Number); return new Date(y,m-1,d).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}); };
 const today = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; };
 const driverById = id => S.drivers.find(d => d.id === id);
@@ -423,22 +514,29 @@ function compute(){
   });
   const byTrack = new Map();
   races.forEach(r => { if(!byTrack.has(r.track_id)) byTrack.set(r.track_id, []); byTrack.get(r.track_id).push(r); });
-  return { races, wins, order, cum, cur, best, byTrack, last: races[races.length-1] || null };
+  /* Next race: first track in calendar order with no result yet. */
+  const left = S.tracks.filter(t => !byTrack.has(t.id));
+  return { races, wins, order, cum, cur, best, byTrack, left, last: races[races.length-1] || null };
 }
 
 /* ---------- render ---------- */
 function render(){
   const c = S.C = compute();
+  S.nextId = c.left.length ? c.left[0].id : null;
   $('#standSub').textContent = c.races.length
     ? `${c.races.length} ${plural(c.races.length,'race','races')} run · race wins only`
     : 'Race wins only';
-  renderTower(c); renderLast(c); renderStats(c); renderChart(c); renderTracks(c); renderLog(c);
+  renderTower(c); renderNext(c); renderLast(c); renderStats(c); renderChart(c); renderTracks(c); renderLog(c);
   renderChrome();
 }
 
 function renderChrome(){
   $('#lockBtn').textContent = S.pass ? 'Editing unlocked' : 'Unlock editing';
   $('#lockBtn').setAttribute('aria-pressed', S.pass ? 'true' : 'false');
+  const light = theme() === 'light';
+  $('#themeTxt').textContent = light ? 'Dark mode' : 'Light mode';
+  $('#themeIcon').innerHTML = light ? ICON_MOON : ICON_SUN;
+  $('#themeBtn').setAttribute('aria-label', light ? 'Switch to dark mode' : 'Switch to light mode');
 }
 
 function renderTower(c){
@@ -453,9 +551,10 @@ function renderTower(c){
     const gap = !total ? '' : (i === 0 || w === leadWins) ? (i === 0 ? 'Leader' : 'Level') : `−${leadWins - w}`;
     const share = total ? Math.round(100*w/total) : 0;
     const lastWin = c.last && c.last.winner_id === d.id;
-    return `<div class="row ${i===0&&total?'lead':''}" data-id="${d.id}" style="--c:${esc(d.color)}">
+    return `<div class="row ${i===0&&total?'lead':''}" data-id="${d.id}" style="--c:${esc(dc(d))}">
       <div class="pos">${i+1}</div>
       <div class="livery"></div>
+      ${avatar(d)}
       <div class="code">${esc(code(d))}</div>
       <div class="who"><b>${esc(d.name)} <span class="no">#${d.driver_number}</span>${lastWin?' <span class="tag">Won last race</span>':''}</b><span class="share" title="${share}% of races won"><i style="width:${share}%"></i></span></div>
       <div class="wins" aria-label="${w} ${plural(w,'win','wins')}">${w}</div>
@@ -476,6 +575,30 @@ function renderTower(c){
   }
 }
 
+function renderNext(c){
+  const el = $('#next');
+  if(!S.tracks.length){ el.className = 'last next blank'; el.innerHTML = '<p>Loading…</p>'; return; }
+  $('#nextSub').textContent = c.left.length ? `${c.left.length} of ${S.tracks.length} to go` : 'Season complete';
+  if(!c.left.length){
+    const a = c.order[0], b = c.order[1];
+    const wa = a ? c.wins.get(a.id) : 0;
+    const level = a && b && c.wins.get(b.id) === wa;
+    el.className = 'last next blank';
+    el.innerHTML = `<p><b>Every track has a result.</b><br>${a ? (level ? `${esc(a.name)} and ${esc(b.name)} finish level on ${wa} ${plural(wa,'win','wins')}.` : `${esc(a.name)} finishes on top with ${wa} ${plural(wa,'win','wins')}.`) : ''}</p>`;
+    return;
+  }
+  const t = c.left[0], then = c.left.slice(1,4);
+  el.className = 'last next';
+  el.innerHTML = `<div class="flagbg" style="background-image:url('${flag(t,320)}')"></div>
+    <div class="body">
+      <p class="when">Up next</p>
+      <h3>${esc(t.gp_name)}</h3>
+      <p class="circuit">${esc(t.circuit)}</p>
+      ${then.length ? `<div class="then"><span>Then</span>${then.map(x => `<span><img src="${flag(x)}" alt="" onerror="this.style.visibility='hidden'">${esc(shortName(x))}</span>`).join('')}</div>` : ''}
+      <button class="btn primary" type="button" data-log-next>Log this race</button>
+    </div>`;
+}
+
 function renderLast(c){
   const el = $('#last');
   if(!c.last){
@@ -491,7 +614,7 @@ function renderLast(c){
       <p class="when">Race ${r.no} · ${fmtDate(r.race_date)}</p>
       <h3>${esc(t.gp_name)}</h3>
       <p class="circuit">${esc(t.circuit)}</p>
-      <div class="winner" style="--c:${esc(d.color)}"><span class="livery"></span><span>${esc(d.name)} won</span></div>
+      <div class="winner">${avatar(d,'sm')}<span>${esc(d.name)} won</span></div>
     </div>`;
 }
 
@@ -506,29 +629,39 @@ function renderStats(c){
 
 function renderChart(c){
   const el = $('#chart'), n = c.races.length;
-  $('#legend').innerHTML = c.order.map(d => `<span style="--c:${esc(vivid(d))}"><i></i>${esc(d.name)}</span>`).join('');
+  $('#legend').innerHTML = c.order.map(d => `<span style="--c:${esc(dc(d))}"><i></i>${esc(d.name)}</span>`).join('');
   if(!n){ el.innerHTML = '<p class="empty">The chart starts after the first race.</p>'; return; }
   const W = Math.max(300, Math.min(el.clientWidth || 700, 900));
-  const H = W < 520 ? 250 : 320;
-  const L = 30, R = 76, T = 14, B = 30;
+  const L = 30, R = 70, T = 14;
+  const plotW = W - L - R, sp = plotW / n;
+  const horiz = sp >= 96;                       // room for flat labels
+  const B = horiz ? 58 : 104;
+  const PH = W < 520 ? 190 : 250;
+  const H = T + PH + B;
   const maxW = Math.max(3, ...c.order.map(d => c.wins.get(d.id)));
-  const x = i => L + (W - L - R) * i / n;
-  const y = v => H - B - (H - B - T) * v / maxW;
+  const x = i => L + plotW * i / n;
+  const y = v => T + PH - PH * v / maxW;
   const yStep = maxW > 12 ? Math.ceil(maxW/6) : 1;
   let g = '';
   for(let v = 0; v <= maxW; v += yStep){
-    g += `<line x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}" stroke="#2d2d38" stroke-width="1"/>
-          <text x="${L-8}" y="${y(v)+4}" text-anchor="end" font-size="11" fill="#9d9dad">${v}</text>`;
+    g += `<line class="gl" x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}"/>
+          <text class="ax" x="${L-8}" y="${y(v)+4}" text-anchor="end">${v}</text>`;
   }
-  const xEvery = Math.max(1, Math.ceil(n / (W < 520 ? 6 : 12)));
-  for(let i = 1; i <= n; i += xEvery){
-    g += `<text x="${x(i)}" y="${H-B+18}" text-anchor="middle" font-size="11" fill="#9d9dad">${i}</text>`;
-  }
-  g += `<text x="${L}" y="${H-2}" font-size="11" fill="#9d9dad">Race number</text>`;
+  /* x axis: one flag + track name per race */
+  const every = Math.max(1, Math.ceil((horiz ? 70 : 24) / sp));
+  c.races.forEach((r, k) => {
+    const i = k + 1, t = trackById(r.track_id);
+    if(!t || (i - 1) % every) return;
+    const cx = x(i), top = T + PH;
+    g += `<image href="${flag(t)}" x="${cx-10}" y="${top+8}" width="20" height="15" preserveAspectRatio="xMidYMid slice"/>`;
+    g += horiz
+      ? `<text class="ax" x="${cx}" y="${top+40}" text-anchor="middle">${esc(shortName(t))}</text>`
+      : `<text class="ax" transform="translate(${cx-3} ${top+34}) rotate(45)" text-anchor="start">${esc(shortName(t))}</text>`;
+  });
   const m = c.order.length, ends = [];
   let lines = '';
   c.order.forEach((d,k) => {
-    const off = (k - (m-1)/2) * 2.4, cum = c.cum.get(d.id), col = vivid(d);
+    const off = (k - (m-1)/2) * 2.4, cum = c.cum.get(d.id), col = dc(d);
     let p = `M${x(0)} ${y(cum[0]) + off}`;
     for(let i = 1; i <= n; i++) p += ` H${x(i)} V${y(cum[i]) + off}`;
     lines += `<path d="${p}" fill="none" stroke="${esc(col)}" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>`;
@@ -540,22 +673,32 @@ function renderChart(c){
     lines += `<circle cx="${x(n)}" cy="${e.cy}" r="4.5" fill="${esc(e.col)}"/>
               <text x="${x(n)+11}" y="${e.y+4}" font-size="13" font-weight="700" fill="${esc(e.col)}">${esc(e.text)}</text>`;
   });
+  /* hover targets: one column per race */
+  let hover = '';
+  c.races.forEach((r, k) => {
+    const t = trackById(r.track_id), d = driverById(r.winner_id);
+    if(!t || !d) return;
+    hover += `<rect x="${x(k+1) - sp/2}" y="${T}" width="${sp}" height="${PH + B}" fill="transparent"><title>Race ${r.no}: ${esc(t.gp_name)}, won by ${esc(d.name)}</title></rect>`;
+  });
   const summary = c.order.map(d => `${d.name} ${c.wins.get(d.id)}`).join(', ');
-  el.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Cumulative wins after ${n} races. ${esc(summary)}.">${g}${lines}</svg>`;
+  el.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Cumulative wins after ${n} races. ${esc(summary)}.">${g}${lines}${hover}</svg>`;
 }
 
 function renderTracks(c){
   $('#trackSub').textContent = `${c.byTrack.size} of ${S.tracks.length} raced · a dot is one race`;
   $('#tracks').innerHTML = S.tracks.map(t => {
     const rs = c.byTrack.get(t.id) || [];
-    if(!rs.length) return `<div class="tile off">
-      <div class="t">${flagImg(t)}<b>${esc(shortGp(t))}</b></div><div class="c">${esc(t.circuit)}</div></div>`;
+    if(!rs.length){
+      const isNext = t.id === S.nextId;
+      return `<div class="tile off ${isNext ? 'next' : ''}">
+        <div class="t">${flagImg(t)}<b>${esc(shortGp(t))}</b>${isNext ? '<span class="tag go">Up next</span>' : ''}</div><div class="c">${esc(t.circuit)}</div></div>`;
+    }
     const tally = new Map();
     rs.forEach(r => tally.set(r.winner_id, (tally.get(r.winner_id)||0) + 1));
     const top = [...tally.entries()].sort((a,b) => b[1]-a[1]);
     const owner = top.length && (top.length === 1 || top[0][1] > top[1][1]) ? driverById(top[0][0]) : null;
-    const dots = rs.map(r => { const d = driverById(r.winner_id); return d ? `<i style="--c:${esc(d.color)}" title="Race ${r.no}: ${esc(d.name)}"></i>` : ''; }).join('');
-    return `<div class="tile" style="border-left-color:${owner ? esc(vivid(owner)) : '#fff'}">
+    const dots = rs.map(r => { const d = driverById(r.winner_id); return d ? `<i style="--c:${esc(dc(d))}" title="Race ${r.no}: ${esc(d.name)}"></i>` : ''; }).join('');
+    return `<div class="tile" style="border-left-color:${owner ? esc(dc(owner)) : 'var(--ink)'}">
       <div class="t">${flagImg(t)}<b>${esc(shortGp(t))}</b></div><div class="c">${esc(t.circuit)}</div><div class="dots">${dots}</div></div>`;
   }).join('');
 }
@@ -569,7 +712,7 @@ function renderLog(c){
     return `<div class="lr">
       <div class="n">${r.no}</div>
       <div class="trk">${flagImg(t)}<div><b>${esc(t.gp_name)}</b><small>${esc(t.circuit)}</small></div></div>
-      <div class="win" style="--c:${esc(d.color)}"><span class="livery"></span>${esc(d.name)}</div>
+      <div class="win">${avatar(d,'sm')}${esc(d.name)}</div>
       <div class="meta lob">${r.lobby_size} ${plural(r.lobby_size,'player','players')}</div>
       <div class="meta">${fmtDate(r.race_date)}</div>
       <button class="btn ghost ed" type="button" data-edit="${r.id}" aria-label="Edit race ${r.no}">Edit</button>
@@ -632,24 +775,27 @@ function openRace(race){
   editingId = race ? race.id : null;
   const last = S.C && S.C.last;
   $('#raceTitle').textContent = race ? `Edit race ${race.no}` : 'Log a race';
-  $('#raceSub').textContent = race ? 'Fix the track, winner or date.' : 'Pick the track and who won.';
+  $('#raceSub').textContent = race ? 'Fix the track, winner or date.' : 'The next track on the calendar is selected. Change it if you raced somewhere else.';
   $('#raceSave').textContent = 'Save race';
   $('#raceErr').textContent = '';
   const delBtn = $('#delBtn'); delBtn.hidden = !race; delBtn.textContent = 'Delete race'; delBtn.classList.remove('armed');
   $('#fTrack').innerHTML = '<option value="">Choose a track</option>' + S.tracks.map(t =>
-    `<option value="${t.id}">${esc(t.gp_name)} — ${esc(t.circuit)}</option>`).join('');
+    `<option value="${t.id}">${esc(t.gp_name)} — ${esc(t.circuit)}${S.C && S.C.byTrack.has(t.id) ? ' (raced)' : ''}</option>`).join('');
   const pool = S.drivers.filter(d => d.active || (race && d.id === race.winner_id));
   $('#fWinner').innerHTML = pool.map(d =>
-    `<label class="chip" style="--c:${esc(d.color)}"><input type="radio" name="winner" value="${d.id}"><span>${esc(d.name)}</span></label>`).join('');
-  $('#fTrack').value = race ? race.track_id : '';
+    `<label class="chip" style="--c:${esc(dc(d))}"><input type="radio" name="winner" value="${d.id}"><span>${esc(d.name)}</span></label>`).join('');
+  $('#fTrack').value = race ? race.track_id : (S.nextId || '');
   $('#fDate').value = race ? race.race_date : today();
   $('#fLobby').value = race ? race.lobby_size : (last ? last.lobby_size : 3);
   if(race){ const r = $(`#fWinner input[value="${race.winner_id}"]`); if(r) r.checked = true; }
   $('#raceDlg').showModal();
-  (race ? $('#fTrack') : $('#fTrack')).focus();
+  $('#fTrack').focus();
 }
 
 $('#addBtn').addEventListener('click', async () => { if(await ensureUnlocked()) openRace(null); });
+$('#next').addEventListener('click', async e => {
+  if(e.target.closest('[data-log-next]') && await ensureUnlocked()) openRace(null);
+});
 $('#log').addEventListener('click', async e => {
   const b = e.target.closest('[data-edit]'); if(!b) return;
   const race = S.C.races.find(r => r.id === b.dataset.edit);
@@ -767,6 +913,7 @@ addEventListener('resize', () => { clearTimeout(resizeT); resizeT = setTimeout((
 
 /* ---------- boot ---------- */
 async function boot(){
+  renderChrome();
   const el = $('#boot');
   const first = !ss.get('f1l_seen') && !reduceMotion;
   let minWait = Promise.resolve();
